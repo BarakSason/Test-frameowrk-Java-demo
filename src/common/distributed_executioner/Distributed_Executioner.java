@@ -18,11 +18,6 @@ public class Distributed_Executioner extends Remote_Executioner {
 			host = randomize_host();
 		}
 
-		/*
-		 * Pre-op log (INFO level) - Log operation (e.g.
-		 * "Executing command "X" on host "Y")
-		 */
-//		System.out.println("Executing command \"" + cmd + "\" on host \"" + host + "\"");
 		Logger.pre_op_log(cmd, host);
 
 		Session session = session_connect(host);

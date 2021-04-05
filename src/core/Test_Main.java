@@ -3,7 +3,7 @@ package core;
 import java.io.File;
 import java.util.LinkedList;
 
-import common.Ops_Exception;
+import common.Logger;
 import common.distributed_executioner.Distributed_Executioner;
 import common.ops.*;
 import ssh.Connection_Manager;
@@ -19,6 +19,8 @@ public class Test_Main {
 
 			/* Initiating SSH connection */
 			Connection_Manager.init();
+
+			/* Instantiate Ops libs required by framework for cluster creation */
 			distributed_executioner = new Distributed_Executioner();
 			Gluster_Ops gluster_ops = new Gluster_Ops(distributed_executioner);
 			Peer_Ops peer_ops = new Peer_Ops(distributed_executioner);
@@ -35,14 +37,7 @@ public class Test_Main {
 			/* Destroying cluster */
 			destroy_cluster(gluster_ops, peer_ops);
 		} catch (Exception e) {
-			/*
-			 * Post-op log, ERROR level
-			 */
-			if (e instanceof Ops_Exception) {
-				System.out.println(((Ops_Exception) e).err_msg);
-			} else {
-				e.printStackTrace();
-			}
+			Logger.post_op_log_failure(e);
 		}
 
 		/* Disconnecting sessions */
@@ -81,6 +76,7 @@ public class Test_Main {
 	}
 
 	private static void delete_test_binaries() {
+		// TODO: Parse path from config file
 		final String BIN_PATH = "/root/eclipse-workspace-java/Test_Framework/bin/tests"; // Path to place compiled test
 																							// classes
 		LinkedList<String> dirs_to_scan = new LinkedList<String>();

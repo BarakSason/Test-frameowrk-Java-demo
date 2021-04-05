@@ -21,7 +21,7 @@ public abstract class Abstract_Ops {
 			throw new Ops_Exception(op_res.msg);
 		}
 
-		System.out.println(op_res.msg);
+		Logger.log_cmd_output(op_res.msg);
 	}
 
 	public void execute_abstract_op_xml(String cmd, String host, String xml_tag) throws Exception {

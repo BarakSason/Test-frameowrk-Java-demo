@@ -13,6 +13,7 @@ import javax.tools.ToolProvider;
 import tests.TestWrapper;
 
 public class Test_List_Builder {
+	//TODO: Parse path from config file
 	private static final String BIN_PATH = "/root/eclipse-workspace-java/Test_Framework/bin"; // Path to place compiled
 																								// test classes
 	private static final String PACKAGE_NAME = "tests.functional.dht"; // Package name of tests

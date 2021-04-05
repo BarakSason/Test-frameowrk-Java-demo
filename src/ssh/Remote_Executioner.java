@@ -8,6 +8,8 @@ import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.Session;
 
+import common.Logger;
+
 public class Remote_Executioner {
 	public static int SUCCESS = 0; // TODO: move these values to GLOBALS class
 	protected static int FAILURE = -1;
@@ -34,18 +36,11 @@ public class Remote_Executioner {
 
 			op_res.msg = cmd_callback(channel, in);
 			if (channel.getExitStatus() == 0) {
-				/*
-				 * Post-op log, Success (INFO level) - Log operation (e.g.
-				 * "Executing command "X" on host "Y" completed successfully) - Success
-				 */
-				System.out.println(
-						"Execution of command \"" + cmd + "\" on host \"" + host + "\" completed successfully");
+				Logger.post_op_log_success(cmd, host);
 			} else {
 				String err_msg = cmd_callback(channel, err);
 				op_res.res = FAILURE;
-				/* Construct log message to be processed by test code */
-				op_res.msg = "Execution of command \"" + cmd + "\" on host \"" + host + "\" failed due to:\n"
-						+ err_msg;
+				op_res.msg = Logger.construct_failure_string(cmd, host, err_msg);
 			}
 		} catch (Exception e) {
 		} finally {

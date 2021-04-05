@@ -1,6 +1,6 @@
 package tests;
 
-import common.Ops_Exception;
+import common.Logger;
 import common.distributed_executioner.Distributed_Executioner;
 import common.ops.*;
 
@@ -36,14 +36,7 @@ public abstract class Abstract_Test {
 			execute_test();
 		} catch (Exception e) {
 			test_res = FAIL;
-			/*
-			 * Post-op log, ERROR level
-			 */
-			if (e instanceof Ops_Exception) {
-				System.out.println(((Ops_Exception) e).err_msg);
-			} else {
-				e.printStackTrace();
-			}
+			Logger.post_op_log_failure(e);
 		}
 
 		return test_res;
