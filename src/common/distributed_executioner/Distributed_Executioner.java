@@ -11,11 +11,17 @@ import ssh.Remote_Executioner;
 
 public class Distributed_Executioner extends Remote_Executioner {
 	private HashMap<String, Session> sessions = new HashMap<String, Session>();
+	String first_host;
 
 	public Op_Res execute_cmd_on_single_server(String cmd, String host) throws Exception {
 		// TODO: differentiate between client and sever ops
 		if (host == null) {
-			host = randomize_host();
+			if (!sessions.isEmpty()) {
+				host = first_host;
+			} else {
+				host = randomize_host();
+				first_host = host;
+			}
 		}
 
 		Logger.pre_op_log(cmd, host);

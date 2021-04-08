@@ -11,7 +11,7 @@ public class Volume_Ops extends Abstract_Ops {
 
 	// TODO: Add missing argumnets and eliminate hardcoded values
 	public void volume_create(String volname, String host, boolean force) throws Exception {
-		String bricks = "VM1:/root/bricks/brick1 VM2:/root/bricks/brick2 VM3:/root/bricks/brick3";
+		String bricks = "VM1:/root/bricks/brick1";
 		String cmd = "gluster volume create " + volname + " " + bricks;
 
 		if (force) {

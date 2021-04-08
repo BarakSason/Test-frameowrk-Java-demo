@@ -112,6 +112,6 @@ public class Test_List_Builder {
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		compiler.run(null, null, null, "-d", BIN_PATH, test_path);
 
-		System.out.println("Compiled test" + test_path);
+//		System.out.println("Compiled test" + test_path);
 	}
 }
