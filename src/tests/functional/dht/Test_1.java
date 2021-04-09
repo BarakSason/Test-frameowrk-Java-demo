@@ -3,6 +3,7 @@ package tests.functional.dht;
 import common.Logger;
 //import core.Params_Handler;
 import common.Ops_Exception;
+import core.Globals;
 import tests.Abstract_Test;
 
 public class Test_1 extends Abstract_Test {
@@ -12,7 +13,7 @@ public class Test_1 extends Abstract_Test {
 	}
 
 	public void execute_test() throws Exception {
-//		System.out.println(test_name + " running");
+		Logger.print(test_name + " running");
 
 //		String path = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
 //		System.out.println(path);
@@ -29,12 +30,12 @@ public class Test_1 extends Abstract_Test {
 		volume_ops.volume_create(volname, true);
 		volume_ops.volume_start(volname);
 		volume_ops.volume_status(volname);
-		io_ops.execute_io_cmd("VM1", "cd /mnt; mkdir " + volname);
-		mount_ops.mount_volume("VM1", volname, mountpoint);
-		io_ops.execute_io_cmd("VM1", "cd " + mountpoint + "; touch {1..100}");
-		io_ops.execute_io_cmd("VM1", "ls -l " + mountpoint);
-		io_ops.execute_io_cmd("VM1", "cd " + mountpoint + "; rm -rf *");
-		io_ops.execute_io_cmd("VM1", "ls -l " + mountpoint);
+		io_ops.execute_io_cmd(Globals.io_client, "cd /mnt; mkdir " + volname);
+		mount_ops.mount_volume(Globals.io_client, volname, mountpoint);
+		io_ops.execute_io_cmd(Globals.io_client, "cd " + mountpoint + "; touch {1..100}");
+		io_ops.execute_io_cmd(Globals.io_client, "ls -l " + mountpoint);
+		io_ops.execute_io_cmd(Globals.io_client, "cd " + mountpoint + "; rm -rf *");
+		io_ops.execute_io_cmd(Globals.io_client, "ls -l " + mountpoint);
 
 		try {
 			io_ops.execute_io_cmd("ls -l /non-exsisting-path"); // An op which is expected to fail
@@ -44,7 +45,7 @@ public class Test_1 extends Abstract_Test {
 
 		volume_ops.volume_stop(volname);
 		volume_ops.volume_delete(volname);
-		mount_ops.unmount_volume("VM1", volname, mountpoint);
-		io_ops.execute_io_cmd("VM1", "rm -rf " + mountpoint);
+		mount_ops.unmount_volume(Globals.io_client, volname, mountpoint);
+		io_ops.execute_io_cmd(Globals.io_client, "rm -rf " + mountpoint);
 	}
 }

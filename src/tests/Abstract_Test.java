@@ -55,13 +55,13 @@ public abstract class Abstract_Test {
 	}
 
 	public void core_init() {
-//		System.out.println(test_name + " from component " + component + " inits");
+		Logger.print(test_name + " from component " + component + " inits");
 		// Init logger
 		distributed_executioner = new Distributed_Executioner();
 	}
 
 	public void terminate() {
-//		System.out.println(test_name + " terminates");
+		Logger.print(test_name + " terminates");
 
 		if (distributed_executioner != null) {
 			distributed_executioner.disconnect_sessions();

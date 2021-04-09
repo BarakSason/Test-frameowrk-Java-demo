@@ -58,29 +58,28 @@ public class Test_Main {
 		 * both of these cases, cluster creation is not needed
 		 */
 		/* TODO: Parse hosts from config file */
-		gluster_ops.glusterd_start("VM1");
-		gluster_ops.glusterd_start("VM2");
-		gluster_ops.glusterd_start("VM3");
+		gluster_ops.glusterd_start(Globals.server_1);
+		gluster_ops.glusterd_start(Globals.server_2);
+		gluster_ops.glusterd_start(Globals.server_3);
 
-		peer_ops.peer_probe("VM1", "VM2");
-		peer_ops.peer_probe("VM1", "VM3");
+		peer_ops.peer_probe(Globals.server_1, Globals.server_2);
+		peer_ops.peer_probe(Globals.server_1, "VM3");
 	}
 
 	private static void destroy_cluster(Gluster_Ops gluster_ops, Peer_Ops peer_ops) throws Exception {
-		peer_ops.peer_detach("VM1", "VM2");
-		peer_ops.peer_detach("VM1", "VM3");
+		peer_ops.peer_detach(Globals.server_1, Globals.server_2);
+		peer_ops.peer_detach(Globals.server_1, Globals.server_3);
 
-		gluster_ops.glusterd_stop("VM1");
-		gluster_ops.glusterd_stop("VM2");
-		gluster_ops.glusterd_stop("VM3");
+		gluster_ops.glusterd_stop(Globals.server_1);
+		gluster_ops.glusterd_stop(Globals.server_2);
+		gluster_ops.glusterd_stop(Globals.server_3);
 	}
 
 	private static void delete_test_binaries() {
 		// TODO: Parse path from config file
-		final String BIN_PATH = "/root/eclipse-workspace-java/Test_Framework/bin/tests"; // Path to place compiled test
-																							// classes
+
 		LinkedList<String> dirs_to_scan = new LinkedList<String>();
-		dirs_to_scan.add(BIN_PATH);
+		dirs_to_scan.add(Globals.BIN_PATH);
 
 		while (!dirs_to_scan.isEmpty()) {
 			try {
@@ -88,7 +87,7 @@ public class Test_Main {
 				File[] entries = cur_dir.listFiles();
 
 				for (File entry : entries) {
-					if (entry.isFile() && entry.getName().startsWith("Test_")) {
+					if (entry.isFile() && entry.getName().startsWith(Globals.test_prefix)) {
 						entry.delete();
 					} else {
 						if (entry.isDirectory()) {

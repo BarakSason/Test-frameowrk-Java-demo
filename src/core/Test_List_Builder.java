@@ -10,16 +10,15 @@ import java.util.LinkedList;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 
+import common.Logger;
 import tests.TestWrapper;
 
 public class Test_List_Builder {
-	//TODO: Parse path from config file
-	private static final String BIN_PATH = "/root/eclipse-workspace-java/Test_Framework/bin"; // Path to place compiled
-																								// test classes
+	// TODO: Parse path from config file
 	private static final String PACKAGE_NAME = "tests.functional.dht"; // Package name of tests
 
 	public static LinkedList<TestWrapper> create_test_list(LinkedList<String> dirs_to_scan) {
-		File classes_dir = new File(BIN_PATH);
+		File classes_dir = new File(Globals.BIN_PATH);
 
 		LinkedList<TestWrapper> tests_to_run = new LinkedList<TestWrapper>();
 
@@ -33,7 +32,8 @@ public class Test_List_Builder {
 				for (File entry : entries) {
 					String test_name_java = entry.getName();
 
-					if (entry.isFile() && test_name_java.startsWith("Test_") && test_name_java.endsWith(".java")) {
+					if (entry.isFile() && test_name_java.startsWith(Globals.test_prefix)
+							&& test_name_java.endsWith(".java")) {
 						/*
 						 * This is a test - Compile, instantiate, create methods map and it add to the
 						 * test list
@@ -73,6 +73,7 @@ public class Test_List_Builder {
 		}
 
 		return tests_to_run;
+
 	}
 
 	/* Load a test class */
@@ -110,8 +111,8 @@ public class Test_List_Builder {
 	/* Compile a test */
 	private static void compile_test(String test_path) {
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-		compiler.run(null, null, null, "-d", BIN_PATH, test_path);
+		compiler.run(null, null, null, "-d", Globals.BIN_PATH, test_path);
 
-//		System.out.println("Compiled test" + test_path);
+		Logger.print("Compiled test" + test_path);
 	}
 }
