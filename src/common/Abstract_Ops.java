@@ -14,8 +14,18 @@ public abstract class Abstract_Ops {
 
 	// TODO: Differentiate between client and server ops in order to access correct
 	// session map
-	public void execute_abstract_op(String cmd, String host) throws Exception {
+	public void execute_abstract_server_op(String cmd, String host) throws Exception {
 		Op_Res op_res = distributed_executioner.execute_cmd_on_single_server(cmd, host);
+
+		if (op_res.res != Remote_Executioner.SUCCESS) {
+			throw new Framework_Exception(op_res.msg);
+		}
+
+		Logger.log_cmd_output(op_res.msg);
+	}
+	
+	public void execute_abstract_client_op(String cmd, String host) throws Exception {
+		Op_Res op_res = distributed_executioner.execute_cmd_on_single_client(cmd, host);
 
 		if (op_res.res != Remote_Executioner.SUCCESS) {
 			throw new Framework_Exception(op_res.msg);

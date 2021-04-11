@@ -12,12 +12,12 @@ public class Peer_Ops extends Abstract_Ops {
 	public void peer_probe(String host, String peer) throws Exception {
 		String cmd = "gluster peer probe " + peer;
 
-		execute_abstract_op(cmd, host);
+		execute_abstract_server_op(cmd, host);
 	}
 
 	public void peer_detach(String host, String peer) throws Exception {
 		String cmd = "gluster peer detach " + peer + " --mode=script";
 
-		execute_abstract_op(cmd, host);
+		execute_abstract_server_op(cmd, host);
 	}
 }

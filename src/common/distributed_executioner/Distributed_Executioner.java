@@ -14,26 +14,34 @@ public class Distributed_Executioner extends Remote_Executioner {
 	public ArrayList<String> availble_servers;
 	public ArrayList<String> in_use_servers;
 	private HashMap<String, Session> server_sessions;
+	
+	public ArrayList<String> availble_clients;
+	public ArrayList<String> in_use_clients;
+	private HashMap<String, Session> client_sessions;
 
 	public Distributed_Executioner() {
-		availble_servers = Params_Handler.get_servers_list();
+		availble_servers = Params_Handler.get_servers();
 		in_use_servers = new ArrayList<String>();
 		server_sessions = new HashMap<String, Session>();
+		
+		availble_clients = Params_Handler.get_clients();
+		in_use_clients = new ArrayList<String>();
+		client_sessions = new HashMap<String, Session>();
 	}
 
 	public Op_Res execute_cmd_on_single_server(String cmd, String host) throws Exception {
-		// TODO: differentiate between client and sever ops
-//		if (host == null) {
-//			if (!sessions.isEmpty()) {
-//				host = first_host;
-//			} else {
-//				host = randomize_host();
-//				first_host = host;
-//			}
-//		}
-		
 		Logger.pre_op_log(cmd, host);
-		Session session = session_connect(host);
+		Session session = connect_server_session(host);
+		Op_Res op_res = execute_remote_cmd(cmd, session);
+		/*
+		 * Debug log - (e.g. "Execution of command "X" on host "Y" returned...)
+		 */
+		return op_res;
+	}
+	
+	public Op_Res execute_cmd_on_single_client(String cmd, String host) throws Exception {
+		Logger.pre_op_log(cmd, host);
+		Session session = connect_client_session(host);
 		Op_Res op_res = execute_remote_cmd(cmd, session);
 		/*
 		 * Debug log - (e.g. "Execution of command "X" on host "Y" returned...)
@@ -56,13 +64,35 @@ public class Distributed_Executioner extends Remote_Executioner {
 
 		return random_server;
 	}
+	
+	public String randomize_client() {
+		int clients_num = availble_clients.size();
 
-	private Session session_connect(String host) throws Exception {
+		int random_client_num = (int) (Math.random() * clients_num);
+		String random_client = availble_clients.remove(random_client_num);
+		// TODO: Add to in_use_servers here?
+		in_use_clients.add(random_client);
+
+		return random_client;
+	}
+
+	private Session connect_server_session(String host) throws Exception {
 		Session session = server_sessions.get(host);
 
 		if (session == null) {
 			session = Connection_Manager.createSession(host);
 			server_sessions.put(host, session);
+		}
+
+		return session;
+	}
+	
+	private Session connect_client_session(String host) throws Exception {
+		Session session = client_sessions.get(host);
+
+		if (session == null) {
+			session = Connection_Manager.createSession(host);
+			client_sessions.put(host, session);
 		}
 
 		return session;
@@ -75,10 +105,4 @@ public class Distributed_Executioner extends Remote_Executioner {
 			}
 		}
 	}
-//
-//	protected Op_Res run_cmd_on_multiple_servers(String cmd, String ips) {
-//		Op_Res ret = ssh_execute_on_multiple_machines(cmd + ips);
-//		/* Log operation - DEBUG level (e.g. "about to run cmd X on server Y") */
-//		return ret;
-//	}
 }

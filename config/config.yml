@@ -20,8 +20,9 @@ servers:
 # *client_vm[x] wherever required and can also be used in test cases using 
 # just "client_vm[x]"
 clients:
-    - &client_vm1 client-vm1 #Example- &client_vm1 0.0.0.0
-    - &client_vm2 client-vm2
+    - &client_1 VM1 #Example- &client_vm1 0.0.0.0
+    - &client_2 VM2
+    - &client_3 VM3
 
 # 'servers_info' is info about each server in the cluster.
 # the brick_root is a list where multiple mount points can be added.
@@ -35,11 +36,11 @@ servers_info:
         user: "root"
         passwd: "redhat"
     *server_2: &VM2
-        brick_root: ["/root/bricks"] #Example- brick_root: ["/bricks","/gluster"]
+        brick_root: ["/root/bricks"]
         user: "root"
         passwd: "redhat"
     *server_3: &VM3
-        brick_root: ["/root/bricks"] #Example- brick_root: ["/bricks","/gluster"]
+        brick_root: ["/root/bricks"]
         user: "root"
         passwd: "redhat"
 
@@ -48,11 +49,15 @@ servers_info:
 # in case of linux).
 # user and password can be defined for creating ssh connection
 # This section has to be defined.
+# ************* TODO: Add mountpoint per client
 clients_info:
-    *client_vm1: &client1
+    *client_1: &VM1
         user: "root"
         passwd: "redhat"
-    *client_vm2: &client2
+    *client_2: &VM2
+        user: 'root'
+        passwd: "redhat"
+    *client_3: &VM3
         user: 'root'
         passwd: "redhat"
 

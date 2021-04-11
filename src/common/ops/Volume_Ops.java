@@ -18,19 +18,19 @@ public class Volume_Ops extends Abstract_Ops {
 			cmd += " force";
 		}
 
-		execute_abstract_op(cmd, host);
+		execute_abstract_server_op(cmd, host);
 	}
 
 	public void volume_start(String host, String volname) throws Exception {
 		String cmd = "gluster volume start " + volname;
 
-		execute_abstract_op(cmd, host);
+		execute_abstract_server_op(cmd, host);
 	}
 
 	public void volume_status(String host, String volname) throws Exception {
 		String cmd = "gluster volume status " + volname;
 
-		execute_abstract_op(cmd, host);
+		execute_abstract_server_op(cmd, host);
 	}
 
 	public void get_brick_paths(String host, String volname) throws Exception {
@@ -48,12 +48,12 @@ public class Volume_Ops extends Abstract_Ops {
 	public void volume_stop(String host, String volname) throws Exception {
 		String cmd = "gluster volume stop " + volname + " --mode=script";
 
-		execute_abstract_op(cmd, host);
+		execute_abstract_server_op(cmd, host);
 	}
 
 	public void volume_delete(String host, String volname) throws Exception {
 		String cmd = "gluster volume delete " + volname + " --mode=script";
 
-		execute_abstract_op(cmd, host);
+		execute_abstract_server_op(cmd, host);
 	}
 }

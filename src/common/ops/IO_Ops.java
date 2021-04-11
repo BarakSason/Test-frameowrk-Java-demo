@@ -9,10 +9,6 @@ public class IO_Ops extends Abstract_Ops {
 	}
 
 	public void execute_io_cmd(String host, String cmd) throws Exception {
-		execute_abstract_op(cmd, host);
-	}
-
-	public void execute_io_cmd(String cmd) throws Exception {
-		execute_io_cmd(null, cmd);
+		execute_abstract_server_op(cmd, host);
 	}
 }

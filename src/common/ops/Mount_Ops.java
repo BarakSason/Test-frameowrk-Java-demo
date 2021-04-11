@@ -12,7 +12,7 @@ public class Mount_Ops extends Abstract_Ops {
 	public void mount_volume(String host, String volname, String mountpoint) throws Exception {
 		String cmd = "mount -t glusterfs " + host + ":/" + volname + " " + mountpoint;
 
-		execute_abstract_op(cmd, host);
+		execute_abstract_server_op(cmd, host);
 	}
 
 	// TODO: Add APIs without hostname, once an API to get a random host has been
@@ -24,6 +24,6 @@ public class Mount_Ops extends Abstract_Ops {
 	public void unmount_volume(String host, String volname, String mountpoint) throws Exception {
 		String cmd = "umount " + mountpoint;
 
-		execute_abstract_op(cmd, host);
+		execute_abstract_server_op(cmd, host);
 	}
 }

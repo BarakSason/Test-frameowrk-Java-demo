@@ -14,19 +14,12 @@ public class Params_Handler {
 	}
 
 	/* A set of APIs to interact with the param hashmap */
-	public static String read_server(int server_num) {
-		ArrayList<String> servers = param_map.get("servers");
-		return servers.get(server_num - 1);
-	}
-
-	/* A set of APIs to interact with the param hashmap */
-	public static int get_servers_num() {
-		ArrayList<String> servers = param_map.get("servers");
-		return servers.size();
-	}
-
-	public static ArrayList<String> get_servers_list() {
+	public static ArrayList<String> get_servers() {
 		return new ArrayList<String>(param_map.get("servers")); // Deep copy
+	}
+	
+	public static ArrayList<String> get_clients() {
+		return new ArrayList<String>(param_map.get("clients")); // Deep copy
 	}
 
 	// TODO: Handle brick root(s) per server

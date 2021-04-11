@@ -1,7 +1,7 @@
 package common;
 
 public class Logger {
-	private static final boolean is_prints_enabled = false;
+	private static final boolean is_prints_enabled = true;
 
 	public static void pre_op_log(String cmd, String host) {
 		// Info level
