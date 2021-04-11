@@ -6,7 +6,7 @@ import ssh.Remote_Executioner.Op_Res;
 import common.distributed_executioner.Distributed_Executioner;
 
 public abstract class Abstract_Ops {
-	Distributed_Executioner distributed_executioner;
+	protected Distributed_Executioner distributed_executioner;
 
 	public Abstract_Ops(Distributed_Executioner distributed_executioner_arg) {
 		this.distributed_executioner = distributed_executioner_arg;

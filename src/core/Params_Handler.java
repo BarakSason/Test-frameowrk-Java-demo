@@ -25,7 +25,11 @@ public class Params_Handler {
 		return servers.size();
 	}
 
-	//TODO: Handle brick root(s) per server
+	public static ArrayList<String> get_servers_list() {
+		return new ArrayList<String>(param_map.get("servers")); // Deep copy
+	}
+
+	// TODO: Handle brick root(s) per server
 //	@SuppressWarnings({ "unchecked", "rawtypes" })
 //	public static ArrayList<String> get_servers_info() {
 //		ArrayList<String> brick_paths = new ArrayList<String>();

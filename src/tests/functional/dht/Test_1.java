@@ -26,10 +26,12 @@ public class Test_1 extends Abstract_Test {
 		String volname = "dist";
 		String mountpoint = "/mnt/dist"; // TODO: Parse mountpoint per server from config file
 
-		io_ops.execute_io_cmd("ls -l /root");
-		volume_ops.volume_create(volname, true);
-		volume_ops.volume_start(volname);
-		volume_ops.volume_status(volname);
+		String random_server = distributed_executioner.randomize_server();
+
+		io_ops.execute_io_cmd(Globals.io_client, "ls -l /root");
+		volume_ops.volume_create(random_server, volname, true);
+		volume_ops.volume_start(random_server, volname);
+		volume_ops.volume_status(random_server, volname);
 		io_ops.execute_io_cmd(Globals.io_client, "cd /mnt; mkdir " + volname);
 		mount_ops.mount_volume(Globals.io_client, volname, mountpoint);
 		io_ops.execute_io_cmd(Globals.io_client, "cd " + mountpoint + "; touch {1..100}");
@@ -38,13 +40,13 @@ public class Test_1 extends Abstract_Test {
 		io_ops.execute_io_cmd(Globals.io_client, "ls -l " + mountpoint);
 
 		try {
-			io_ops.execute_io_cmd("ls -l /non-exsisting-path"); // An op which is expected to fail
+			io_ops.execute_io_cmd(Globals.io_client, "ls -l /non-exsisting-path"); // An op which is expected to fail
 		} catch (Exception e) {
 			Logger.handle_expected_exception((Framework_Exception) e);
 		}
 
-		volume_ops.volume_stop(volname);
-		volume_ops.volume_delete(volname);
+		volume_ops.volume_stop(random_server, volname);
+		volume_ops.volume_delete(random_server, volname);
 		mount_ops.unmount_volume(Globals.io_client, volname, mountpoint);
 		io_ops.execute_io_cmd(Globals.io_client, "rm -rf " + mountpoint);
 	}

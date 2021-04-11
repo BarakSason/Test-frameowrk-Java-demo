@@ -27,7 +27,8 @@ public class Test_Main {
 			Peer_Ops peer_ops = new Peer_Ops(distributed_executioner);
 
 			/* Creating cluster */
-			create_cluster(gluster_ops, peer_ops);
+			String random_server = distributed_executioner.randomize_server();
+			create_cluster(distributed_executioner, gluster_ops, peer_ops, random_server);
 
 			/* Running tests */
 			LinkedList<String> tests_path = new LinkedList<String>();
@@ -36,7 +37,7 @@ public class Test_Main {
 			Test_Runner.run_tests();
 
 			/* Destroying cluster */
-			destroy_cluster(gluster_ops, peer_ops);
+			destroy_cluster(distributed_executioner, gluster_ops, peer_ops, random_server);
 		} catch (Exception e) {
 			Logger.log_failure(e);
 		}
@@ -51,29 +52,23 @@ public class Test_Main {
 
 	}
 
-	private static void create_cluster(Gluster_Ops gluster_ops, Peer_Ops peer_ops) throws Exception {
-		/*
-		 * TODO: Check number of servers in config file - If there is a single server,
-		 * the framework will operate locally, if there are 2 servers, the 1st will be
-		 * used as management and the 2nd will be used as both server and client. In
-		 * both of these cases, cluster creation is not needed
-		 */
-		/* TODO: Parse hosts from config file */
-		gluster_ops.glusterd_start(Globals.server_1);
-		gluster_ops.glusterd_start(Globals.server_2);
-		gluster_ops.glusterd_start(Globals.server_3);
+	private static void create_cluster(Distributed_Executioner distributed_executioner, Gluster_Ops gluster_ops,
+			Peer_Ops peer_ops, String random_server) throws Exception {
+		gluster_ops.glusterd_start(random_server);
 
-		peer_ops.peer_probe(Globals.server_1, Globals.server_2);
-		peer_ops.peer_probe(Globals.server_1, "VM3");
+		for (String server : distributed_executioner.availble_servers) {
+			gluster_ops.glusterd_start(server);
+			peer_ops.peer_probe(random_server, server);
+		}
 	}
 
-	private static void destroy_cluster(Gluster_Ops gluster_ops, Peer_Ops peer_ops) throws Exception {
-		peer_ops.peer_detach(Globals.server_1, Globals.server_2);
-		peer_ops.peer_detach(Globals.server_1, Globals.server_3);
-
-		gluster_ops.glusterd_stop(Globals.server_1);
-		gluster_ops.glusterd_stop(Globals.server_2);
-		gluster_ops.glusterd_stop(Globals.server_3);
+	private static void destroy_cluster(Distributed_Executioner distributed_executioner, Gluster_Ops gluster_ops,
+			Peer_Ops peer_ops, String random_server) throws Exception {
+		for (String server : distributed_executioner.availble_servers) {
+			peer_ops.peer_detach(random_server, server);
+			gluster_ops.glusterd_stop(server);
+		}
+		gluster_ops.glusterd_stop(random_server);
 	}
 
 	private static void delete_test_binaries() {
@@ -97,7 +92,7 @@ public class Test_Main {
 					}
 				}
 			} catch (Exception e) {
-				e.printStackTrace(); //TODO: replace with logging
+				e.printStackTrace(); // TODO: replace with logging
 			}
 		}
 	}

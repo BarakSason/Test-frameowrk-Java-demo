@@ -15,17 +15,9 @@ public class Gluster_Ops extends Abstract_Ops {
 		execute_abstract_op(cmd, host);
 	}
 
-	public void glusterd_start() throws Exception {
-		glusterd_start(null);
-	}
-
 	public void glusterd_stop(String host) throws Exception {
 		String cmd = "systemctl stop glusterd";
 
 		execute_abstract_op(cmd, host);
-	}
-
-	public void glusterd_stop() throws Exception {
-		glusterd_start(null);
 	}
 }
