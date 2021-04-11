@@ -1,6 +1,12 @@
 package core;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -10,65 +16,63 @@ import java.util.LinkedList;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 
-import common.Logger;
+import common.Framework_Exception;
+import common.Globals;
 import tests.TestWrapper;
 
 public class Test_List_Builder {
 	// TODO: Parse path from config file
 	private static final String PACKAGE_NAME = "tests.functional.dht"; // Package name of tests
+	private static final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
-	public static LinkedList<TestWrapper> create_test_list(LinkedList<String> dirs_to_scan) {
+	public static LinkedList<TestWrapper> create_test_list(LinkedList<String> dirs_to_scan) throws Exception {
 		File classes_dir = new File(Globals.BIN_PATH);
 
 		LinkedList<TestWrapper> tests_to_run = new LinkedList<TestWrapper>();
 
 		while (!dirs_to_scan.isEmpty()) {
-			try {
-				File tests_dir = new File(dirs_to_scan.remove());
-				String tests_dir_path = tests_dir.getAbsolutePath();
+			File tests_dir = new File(dirs_to_scan.remove());
+			String tests_dir_path = tests_dir.getAbsolutePath();
 
-				File[] entries = tests_dir.listFiles();
+			File[] entries = tests_dir.listFiles();
 
-				for (File entry : entries) {
-					String test_name_java = entry.getName();
+			for (File entry : entries) {
+				String test_name_java = entry.getName();
 
-					if (entry.isFile() && test_name_java.startsWith(Globals.test_prefix)
-							&& test_name_java.endsWith(".java")) {
-						/*
-						 * This is a test - Compile, instantiate, create methods map and it add to the
-						 * test list
-						 */
-						String test_path = new String(tests_dir_path + "/" + test_name_java);
+				if (entry.isFile() && test_name_java.startsWith(Globals.test_prefix)
+						&& test_name_java.endsWith(".java")) {
+					/*
+					 * This is a test - Compile, instantiate, create methods map and it add to the
+					 * test list
+					 */
+					String test_path = new String(tests_dir_path + "/" + test_name_java);
 
-						/* Get key paths */
-						String component = tests_dir_path.substring(tests_dir_path.lastIndexOf("/") + 1,
-								tests_dir_path.length());
-						String test_name = test_name_java.substring(0, test_name_java.indexOf("."));
+					/* Get key paths */
+					String component = tests_dir_path.substring(tests_dir_path.lastIndexOf("/") + 1,
+							tests_dir_path.length());
+					String test_name = test_name_java.substring(0, test_name_java.indexOf("."));
 
-						/* Compile the test */
-						compile_test(test_path);
+					/* Compile the test */
+					compile_test(test_path);
 
-						/* Load the test class */
-						Class<?> test_class = load_test_class(classes_dir, test_name_java);
+					/* Load the test class */
+					Class<?> test_class = load_test_class(classes_dir, test_name_java);
 
-						/* Instantiate the test */
-						Object test_instance = instantiate_test(test_class, component, test_name);
+					/* Instantiate the test */
+					Object test_instance = instantiate_test(test_class, component, test_name);
 
-						/* Create a map of test methods */
-						HashMap<String, Method> methods_map = create_methods_map(test_class);
+					/* Create a map of test methods */
+					HashMap<String, Method> methods_map = create_methods_map(test_class);
 
-						/* Add test info to list */
-						TestWrapper cur_test = new TestWrapper(test_instance, methods_map);
-						tests_to_run.add(cur_test);
-					} else {
-						/* This is a dir - Add the path of the next dir to process */
-						if (entry.isDirectory()) {
-							dirs_to_scan.add(entry.getAbsolutePath());
-						}
+					/* Add test info to list */
+					TestWrapper cur_test = new TestWrapper(test_instance, methods_map);
+					tests_to_run.add(cur_test);
+				} else {
+					/* This is a dir - Add the path of the next dir to process */
+					if (entry.isDirectory()) {
+						dirs_to_scan.add(entry.getAbsolutePath());
 					}
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 
@@ -109,10 +113,13 @@ public class Test_List_Builder {
 	}
 
 	/* Compile a test */
-	private static void compile_test(String test_path) {
-		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-		compiler.run(null, null, null, "-d", Globals.BIN_PATH, test_path);
+	private static void compile_test(String test_path) throws Exception {
+		OutputStream os = new ByteArrayOutputStream();
 
-		Logger.print("Compiled test" + test_path);
+		int res = compiler.run(null, null, os, "-d", Globals.BIN_PATH, test_path);
+
+		if (res != Globals.SUCCESS) {
+			throw new Framework_Exception("Compilation of test " + test_path + " failed:\n" + os);
+		}
 	}
 }

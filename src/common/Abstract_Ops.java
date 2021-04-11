@@ -18,7 +18,7 @@ public abstract class Abstract_Ops {
 		Op_Res op_res = distributed_executioner.execute_cmd_on_single_server(cmd, host);
 
 		if (op_res.res != Remote_Executioner.SUCCESS) {
-			throw new Ops_Exception(op_res.msg);
+			throw new Framework_Exception(op_res.msg);
 		}
 
 		Logger.log_cmd_output(op_res.msg);
@@ -28,7 +28,7 @@ public abstract class Abstract_Ops {
 		Op_Res op_res = distributed_executioner.execute_cmd_on_single_server(cmd, host);
 
 		if (op_res.res != Remote_Executioner.SUCCESS) {
-			throw new Ops_Exception(op_res.msg);
+			throw new Framework_Exception(op_res.msg);
 		}
 
 		XML_Parser.parse_xml_response(op_res.msg, xml_tag);

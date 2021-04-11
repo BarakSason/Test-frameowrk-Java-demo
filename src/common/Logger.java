@@ -10,7 +10,7 @@ public class Logger {
 		}
 	}
 
-	public static void post_op_log_success(String cmd, String host) {
+	public static void log_success(String cmd, String host) {
 		// Info level
 		if (is_prints_enabled) {
 			System.out
@@ -18,18 +18,18 @@ public class Logger {
 		}
 	}
 
-	public static void post_op_log_failure(Exception e) {
+	public static void log_failure(Exception e) {
 		// Error level
 		if (is_prints_enabled) {
-			if (e instanceof Ops_Exception) {
-				System.out.println(((Ops_Exception) e).err_msg);
+			if (e instanceof Framework_Exception) {
+				System.out.println(((Framework_Exception) e).err_msg);
 			} else {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public static void handle_expected_exception(Ops_Exception e) {
+	public static void handle_expected_exception(Framework_Exception e) {
 		// Info level
 		if (is_prints_enabled) {
 			String err_msg = e.err_msg;

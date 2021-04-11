@@ -1,9 +1,9 @@
 package tests.functional.dht;
 
+import common.Globals;
 import common.Logger;
 //import core.Params_Handler;
-import common.Ops_Exception;
-import core.Globals;
+import common.Framework_Exception;
 import tests.Abstract_Test;
 
 public class Test_1 extends Abstract_Test {
@@ -40,7 +40,7 @@ public class Test_1 extends Abstract_Test {
 		try {
 			io_ops.execute_io_cmd("ls -l /non-exsisting-path"); // An op which is expected to fail
 		} catch (Exception e) {
-			Logger.handle_expected_exception((Ops_Exception) e);
+			Logger.handle_expected_exception((Framework_Exception) e);
 		}
 
 		volume_ops.volume_stop(volname);

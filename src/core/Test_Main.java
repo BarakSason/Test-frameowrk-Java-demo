@@ -3,6 +3,7 @@ package core;
 import java.io.File;
 import java.util.LinkedList;
 
+import common.Globals;
 import common.Logger;
 import common.distributed_executioner.Distributed_Executioner;
 import common.ops.*;
@@ -37,7 +38,7 @@ public class Test_Main {
 			/* Destroying cluster */
 			destroy_cluster(gluster_ops, peer_ops);
 		} catch (Exception e) {
-			Logger.post_op_log_failure(e);
+			Logger.log_failure(e);
 		}
 
 		/* Disconnecting sessions */
@@ -96,7 +97,7 @@ public class Test_Main {
 					}
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				e.printStackTrace(); //TODO: replace with logging
 			}
 		}
 	}

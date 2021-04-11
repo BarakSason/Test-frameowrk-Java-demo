@@ -1,5 +1,6 @@
 package tests;
 
+import common.Globals;
 import common.Logger;
 import common.distributed_executioner.Distributed_Executioner;
 import common.ops.*;
@@ -10,10 +11,8 @@ public abstract class Abstract_Test {
 	 * most) tests, such as: Test result var / A methods to create a test-specific
 	 * vol / A method to clean the vol once the test is done / Etc'
 	 */
-	private static boolean PASS = true; // TODO: move these values to GLOBALS class
-	private static boolean FAIL = false;
 
-	private boolean test_res = PASS;
+	private int test_res = Globals.SUCCESS;
 
 	/*
 	 * General purpose Ops libs will be declared here, if a test needs additional
@@ -31,12 +30,12 @@ public abstract class Abstract_Test {
 
 	protected abstract void execute_test() throws Exception;
 
-	public boolean abstract_execute_test() {
+	public int abstract_execute_test() {
 		try {
 			execute_test();
 		} catch (Exception e) {
-			test_res = FAIL;
-			Logger.post_op_log_failure(e);
+			test_res = Globals.FAILURE;
+			Logger.log_failure(e);
 		}
 
 		return test_res;

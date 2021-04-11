@@ -36,7 +36,7 @@ public class Remote_Executioner {
 
 			op_res.msg = cmd_callback(channel, in);
 			if (channel.getExitStatus() == 0) {
-				Logger.post_op_log_success(cmd, host);
+				Logger.log_success(cmd, host);
 			} else {
 				String err_msg = cmd_callback(channel, err);
 				op_res.res = FAILURE;
