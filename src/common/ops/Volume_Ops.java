@@ -36,13 +36,13 @@ public class Volume_Ops extends Abstract_Ops {
 	public void get_brick_paths(String host, String volname) throws Exception {
 		String cmd = "gluster volume status " + volname + " --xml";
 
-		execute_abstract_op_xml(cmd, host, "path");
+		execute_abstract_server_op_xml(cmd, host, "path");
 	}
 
 	public void get_brick_pids(String host, String volname) throws Exception {
 		String cmd = "gluster volume status " + volname + " --xml";
 
-		execute_abstract_op_xml(cmd, host, "pid");
+		execute_abstract_server_op_xml(cmd, host, "pid");
 	}
 
 	public void volume_stop(String host, String volname) throws Exception {

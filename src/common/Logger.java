@@ -22,19 +22,27 @@ public class Logger {
 		// Error level
 		if (is_prints_enabled) {
 			if (e instanceof Framework_Exception) {
-				System.out.println(((Framework_Exception) e).err_msg);
+				System.out.print(((Framework_Exception) e).err_msg);
+				StackTraceElement[] ste = e.getStackTrace();
+				for (int i = 0; i < 4; ++i) { // 4 relevant stack frames
+					System.out.println(ste[i]);
+				}
 			} else {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public static void handle_expected_exception(Framework_Exception e) {
+	public static void handle_expected_exception(Exception e) throws Exception {
 		// Info level
 		if (is_prints_enabled) {
-			String err_msg = e.err_msg;
-			err_msg = err_msg.substring(0, err_msg.length() - 1);
-			System.out.println(err_msg + ", as expected");
+			if (e instanceof Framework_Exception) {
+				String err_msg = ((Framework_Exception) e).err_msg;
+				err_msg = err_msg.substring(0, err_msg.length() - 1);
+				System.out.println(err_msg + ", as expected");
+			} else {
+				throw e;
+			}
 		}
 	}
 

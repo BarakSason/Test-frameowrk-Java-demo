@@ -1,13 +1,15 @@
 package tests.functional.dht;
 
 import common.Logger;
-import common.Framework_Exception;
+import common.ops.IO_Ops;
 import tests.Abstract_Test;
 
 public class Test_1 extends Abstract_Test {
+	private IO_Ops io_ops; // An op class specific to this test
 
 	public Test_1(String component, String test_name) throws Exception {
 		super(component, test_name);
+		io_ops = new IO_Ops(distributed_executioner);
 	}
 
 	public void execute_test() throws Exception {
@@ -39,7 +41,7 @@ public class Test_1 extends Abstract_Test {
 		try {
 			io_ops.execute_io_cmd(random_client, "ls -l /non-exsisting-path"); // An op which is expected to fail
 		} catch (Exception e) {
-			Logger.handle_expected_exception((Framework_Exception) e);
+			Logger.handle_expected_exception(e);
 		}
 
 		volume_ops.volume_stop(random_server, volname);

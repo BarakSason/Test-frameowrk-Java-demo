@@ -8,14 +8,12 @@ import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.Session;
 
+import common.Globals;
 import common.Logger;
 
 public class Remote_Executioner {
-	public static int SUCCESS = 0; // TODO: move these values to GLOBALS class
-	protected static int FAILURE = -1;
-
 	public class Op_Res {
-		public int res = SUCCESS;
+		public int res = Globals.SUCCESS;
 		public String msg;
 	}
 
@@ -39,7 +37,7 @@ public class Remote_Executioner {
 				Logger.log_success(cmd, host);
 			} else {
 				String err_msg = cmd_callback(channel, err);
-				op_res.res = FAILURE;
+				op_res.res = Globals.FAILURE;
 				op_res.msg = Logger.construct_failure_string(cmd, host, err_msg);
 			}
 		} catch (Exception e) {
@@ -54,11 +52,11 @@ public class Remote_Executioner {
 
 	private String cmd_callback(Channel channel, InputStream stream) throws Exception {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-		StringBuilder msg = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 
 		while (true) {
 			while (reader.ready()) {
-				msg.append(reader.readLine() + "\n");
+				sb.append(reader.readLine() + "\n");
 			}
 
 			if (channel.isClosed()) {
@@ -66,6 +64,6 @@ public class Remote_Executioner {
 			}
 		}
 
-		return msg.toString();
+		return sb.toString();
 	}
 }

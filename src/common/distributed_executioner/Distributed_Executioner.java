@@ -14,7 +14,7 @@ public class Distributed_Executioner extends Remote_Executioner {
 	public ArrayList<String> availble_servers;
 	public ArrayList<String> in_use_servers;
 	private HashMap<String, Session> server_sessions;
-	
+
 	public ArrayList<String> availble_clients;
 	public ArrayList<String> in_use_clients;
 	private HashMap<String, Session> client_sessions;
@@ -23,7 +23,7 @@ public class Distributed_Executioner extends Remote_Executioner {
 		availble_servers = Params_Handler.get_servers();
 		in_use_servers = new ArrayList<String>();
 		server_sessions = new HashMap<String, Session>();
-		
+
 		availble_clients = Params_Handler.get_clients();
 		in_use_clients = new ArrayList<String>();
 		client_sessions = new HashMap<String, Session>();
@@ -38,7 +38,7 @@ public class Distributed_Executioner extends Remote_Executioner {
 		 */
 		return op_res;
 	}
-	
+
 	public Op_Res execute_cmd_on_single_client(String cmd, String host) throws Exception {
 		Logger.pre_op_log(cmd, host);
 		Session session = connect_client_session(host);
@@ -49,28 +49,23 @@ public class Distributed_Executioner extends Remote_Executioner {
 		return op_res;
 	}
 
-	/*
-	 * TODO: When randomizing host, something it's important what host it is (e.g.
-	 * peer probe can't probe itself), so need at add a mechanism to ensure certain
-	 * operations don't get executed on the random host
-	 */
+	// TODO: Handle failures
 	public String randomize_server() {
 		int servers_num = availble_servers.size();
 
 		int random_server_num = (int) (Math.random() * servers_num);
 		String random_server = availble_servers.remove(random_server_num);
-		// TODO: Add to in_use_servers here?
 		in_use_servers.add(random_server);
 
 		return random_server;
 	}
-	
+
+	// TODO: Handle failures
 	public String randomize_client() {
 		int clients_num = availble_clients.size();
 
 		int random_client_num = (int) (Math.random() * clients_num);
 		String random_client = availble_clients.remove(random_client_num);
-		// TODO: Add to in_use_servers here?
 		in_use_clients.add(random_client);
 
 		return random_client;
@@ -86,7 +81,7 @@ public class Distributed_Executioner extends Remote_Executioner {
 
 		return session;
 	}
-	
+
 	private Session connect_client_session(String host) throws Exception {
 		Session session = client_sessions.get(host);
 

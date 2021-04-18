@@ -30,10 +30,10 @@ public class Test_Main {
 			String random_server = distributed_executioner.randomize_server();
 			create_cluster(distributed_executioner, gluster_ops, peer_ops, random_server);
 
+			/* Selecting tests to run */
+			Test_Runner.tests_to_run = Test_List_Builder.create_test_list(test_dir_path);
+			
 			/* Running tests */
-			LinkedList<String> tests_path = new LinkedList<String>();
-			tests_path.add(test_dir_path);
-			Test_Runner.tests_to_run = Test_List_Builder.create_test_list(tests_path);
 			Test_Runner.run_tests();
 
 			/* Destroying cluster */

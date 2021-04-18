@@ -18,10 +18,8 @@ public abstract class Abstract_Test {
 	 * General purpose Ops libs will be declared here, if a test needs additional
 	 * Ops libs, the test should declare them in the test code
 	 */
-	protected Gluster_Ops gluster_ops;
 	protected Volume_Ops volume_ops;
 	protected Mount_Ops mount_ops;
-	protected IO_Ops io_ops;
 
 	protected Distributed_Executioner distributed_executioner;
 
@@ -47,16 +45,20 @@ public abstract class Abstract_Test {
 
 		core_init();
 
-		gluster_ops = new Gluster_Ops(distributed_executioner);
 		volume_ops = new Volume_Ops(distributed_executioner);
 		mount_ops = new Mount_Ops(distributed_executioner);
-		io_ops = new IO_Ops(distributed_executioner);
 	}
 
-	public void core_init() {
+	private void core_init() {
 		Logger.print(test_name + " from component " + component + " inits");
-		// Init logger
+		// TODO: Init logger
 		distributed_executioner = new Distributed_Executioner();
+	}
+
+	// TODO: return and check value
+	public void init() {
+		// Volume creation & start
+		// Volume mount
 	}
 
 	public void terminate() {

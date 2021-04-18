@@ -1,16 +1,10 @@
 package core;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintStream;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.HashMap;
 import java.util.LinkedList;
 
 import javax.tools.JavaCompiler;
@@ -18,17 +12,19 @@ import javax.tools.ToolProvider;
 
 import common.Framework_Exception;
 import common.Globals;
-import tests.TestWrapper;
 
 public class Test_List_Builder {
 	// TODO: Parse path from config file
 	private static final String PACKAGE_NAME = "tests.functional.dht"; // Package name of tests
 	private static final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
-	public static LinkedList<TestWrapper> create_test_list(LinkedList<String> dirs_to_scan) throws Exception {
+	public static LinkedList<Object> create_test_list(String test_dir_path) throws Exception {
+		LinkedList<String> dirs_to_scan = new LinkedList<String>();
+		dirs_to_scan.add(test_dir_path);
+
 		File classes_dir = new File(Globals.BIN_PATH);
 
-		LinkedList<TestWrapper> tests_to_run = new LinkedList<TestWrapper>();
+		LinkedList<Object> tests_to_run = new LinkedList<Object>();
 
 		while (!dirs_to_scan.isEmpty()) {
 			File tests_dir = new File(dirs_to_scan.remove());
@@ -61,12 +57,7 @@ public class Test_List_Builder {
 					/* Instantiate the test */
 					Object test_instance = instantiate_test(test_class, component, test_name);
 
-					/* Create a map of test methods */
-					HashMap<String, Method> methods_map = create_methods_map(test_class);
-
-					/* Add test info to list */
-					TestWrapper cur_test = new TestWrapper(test_instance, methods_map);
-					tests_to_run.add(cur_test);
+					tests_to_run.add(test_instance);
 				} else {
 					/* This is a dir - Add the path of the next dir to process */
 					if (entry.isDirectory()) {
@@ -97,19 +88,6 @@ public class Test_List_Builder {
 		test_instance = test_class.getDeclaredConstructor(String.class, String.class).newInstance(component, test_name);
 
 		return test_instance;
-	}
-
-	/* Create a map of test methods */
-	private static HashMap<String, Method> create_methods_map(Class<?> cls) {
-		Method[] methods = cls.getMethods();
-
-		HashMap<String, Method> methods_map = new HashMap<String, Method>();
-
-		for (Method m : methods) {
-			methods_map.put(m.getName(), m);
-		}
-
-		return methods_map;
 	}
 
 	/* Compile a test */

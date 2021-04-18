@@ -4,24 +4,29 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import common.Globals;
-import tests.TestWrapper;
 
 public class Runner_Thread extends Thread {
+	private static final String INIT_METHOD = "init"; // Name of the init method (should be same across
+														// all tests)
 	private static final String EXECUTE_TEST_METHOD = "abstract_execute_test"; // Name of the run method (should be same
 																				// across all tests)
 	private static final String TERMINATE_METHOD = "terminate"; // Name of the terminate method (should be same across
 																// all tests)
-	private TestWrapper tw;
+	private Object test_instance;
 
-	public Runner_Thread(TestWrapper tw_arg) {
-		this.tw = tw_arg;
+	public Runner_Thread(Object test_instance_arg) {
+		this.test_instance = test_instance_arg;
 	}
 
 	@Override
 	public void run() {
 		try {
-			Object test_instance = tw.test_instance;
-			HashMap<String, Method> methods_map = tw.methods_map;
+			/* Create a map of test methods */
+			HashMap<String, Method> methods_map = create_methods_map(test_instance.getClass());
+
+			/* Invoke the test method */
+			Method init_method = methods_map.get(INIT_METHOD);
+			init_method.invoke(test_instance);
 
 			/* Invoke the test method */
 			Method test_method = methods_map.get(EXECUTE_TEST_METHOD);
@@ -40,5 +45,18 @@ public class Runner_Thread extends Thread {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	/* Create a map of test methods */
+	private static HashMap<String, Method> create_methods_map(Class<?> cls) {
+		Method[] methods = cls.getMethods();
+
+		HashMap<String, Method> methods_map = new HashMap<String, Method>();
+
+		for (Method m : methods) {
+			methods_map.put(m.getName(), m);
+		}
+
+		return methods_map;
 	}
 }
