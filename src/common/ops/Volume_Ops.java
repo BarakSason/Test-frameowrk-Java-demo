@@ -1,12 +1,13 @@
 package common.ops;
 
 import common.Abstract_Ops;
+import common.Logger;
 import common.distributed_executioner.Distributed_Executioner;
 
 public class Volume_Ops extends Abstract_Ops {
 
-	public Volume_Ops(Distributed_Executioner distributed_executioner_arg) {
-		super(distributed_executioner_arg);
+	public Volume_Ops(Logger logger, Distributed_Executioner distributed_executioner) {
+		super(logger, distributed_executioner);
 	}
 
 	// TODO: Add missing argumnets and eliminate hardcoded values

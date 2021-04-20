@@ -1,12 +1,13 @@
 package common.ops;
 
 import common.Abstract_Ops;
+import common.Logger;
 import common.distributed_executioner.Distributed_Executioner;
 
 public class Gluster_Ops extends Abstract_Ops {
 
-	public Gluster_Ops(Distributed_Executioner distributed_executioner_arg) {
-		super(distributed_executioner_arg);
+	public Gluster_Ops(Logger logger, Distributed_Executioner distributed_executioner) {
+		super(logger, distributed_executioner);
 	}
 
 	public void glusterd_start(String host) throws Exception {

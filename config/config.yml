@@ -1,4 +1,4 @@
-log_file: /var/log/tests/gluster_tests.log
+logs_path: /root/eclipse-workspace-java/Test_Framework/logs
 
 # 'servers' is list of IP's of servers in the cluster.
 # This section has to be defined.

@@ -17,9 +17,13 @@ public class Params_Handler {
 	public static ArrayList<String> get_servers() {
 		return new ArrayList<String>(param_map.get("servers")); // Deep copy
 	}
-	
+
 	public static ArrayList<String> get_clients() {
 		return new ArrayList<String>(param_map.get("clients")); // Deep copy
+	}
+
+	public static String read_value(String key) {
+		return ((Object) param_map.get(key)).toString();
 	}
 
 	// TODO: Handle brick root(s) per server

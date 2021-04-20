@@ -35,7 +35,7 @@ public class Test_List_Builder {
 			for (File entry : entries) {
 				String test_name_java = entry.getName();
 
-				if (entry.isFile() && test_name_java.startsWith(Globals.test_prefix)
+				if (entry.isFile() && test_name_java.startsWith(Globals.TEST_PREFIX)
 						&& test_name_java.endsWith(".java")) {
 					/*
 					 * This is a test - Compile, instantiate, create methods map and it add to the
@@ -43,7 +43,9 @@ public class Test_List_Builder {
 					 */
 					String test_path = new String(tests_dir_path + "/" + test_name_java);
 
-					/* Get key paths */
+					/* Get key values */
+					String helper = tests_dir_path.substring(0, tests_dir_path.lastIndexOf("/"));
+					String test_type = helper.substring(helper.lastIndexOf("/") + 1, helper.length());
 					String component = tests_dir_path.substring(tests_dir_path.lastIndexOf("/") + 1,
 							tests_dir_path.length());
 					String test_name = test_name_java.substring(0, test_name_java.indexOf("."));
@@ -55,7 +57,7 @@ public class Test_List_Builder {
 					Class<?> test_class = load_test_class(classes_dir, test_name_java);
 
 					/* Instantiate the test */
-					Object test_instance = instantiate_test(test_class, component, test_name);
+					Object test_instance = instantiate_test(test_class, test_type, component, test_name);
 
 					tests_to_run.add(test_instance);
 				} else {
@@ -83,9 +85,11 @@ public class Test_List_Builder {
 	}
 
 	/* Instantiate a test */
-	private static Object instantiate_test(Class<?> test_class, String component, String test_name) throws Exception {
+	private static Object instantiate_test(Class<?> test_class, String test_type, String component, String test_name)
+			throws Exception {
 		Object test_instance = null;
-		test_instance = test_class.getDeclaredConstructor(String.class, String.class).newInstance(component, test_name);
+		test_instance = test_class.getDeclaredConstructor(String.class, String.class, String.class)
+				.newInstance(test_type, component, test_name);
 
 		return test_instance;
 	}

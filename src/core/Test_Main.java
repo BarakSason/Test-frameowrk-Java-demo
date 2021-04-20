@@ -12,19 +12,21 @@ import ssh.Connection_Manager;
 public class Test_Main {
 	public static void main(String args[]) throws Exception {
 		Distributed_Executioner distributed_executioner = null;
+		
+		Logger logger = null;
 
 		try {
 			Params_Handler.parseConfigFile(args[0]); // args[0] - Path of config file
-
 			String test_dir_path = args[1]; // args[0] - Path tests dir
+			logger = new Logger();
 
 			/* Initiating SSH connection */
 			Connection_Manager.init();
 
 			/* Instantiate Ops libs required by framework for cluster creation */
-			distributed_executioner = new Distributed_Executioner();
-			Gluster_Ops gluster_ops = new Gluster_Ops(distributed_executioner);
-			Peer_Ops peer_ops = new Peer_Ops(distributed_executioner);
+			distributed_executioner = new Distributed_Executioner(logger);
+			Gluster_Ops gluster_ops = new Gluster_Ops(logger, distributed_executioner);
+			Peer_Ops peer_ops = new Peer_Ops(logger, distributed_executioner);
 
 			/* Creating cluster */
 			String random_server = distributed_executioner.randomize_server();
@@ -32,14 +34,14 @@ public class Test_Main {
 
 			/* Selecting tests to run */
 			Test_Runner.tests_to_run = Test_List_Builder.create_test_list(test_dir_path);
-			
+
 			/* Running tests */
-			Test_Runner.run_tests();
+			Test_Runner.run_tests(logger);
 
 			/* Destroying cluster */
 			destroy_cluster(distributed_executioner, gluster_ops, peer_ops, random_server);
 		} catch (Exception e) {
-			Logger.log_failure(e);
+			logger.log_failure(e);
 		}
 
 		/* Disconnecting sessions */
@@ -83,7 +85,7 @@ public class Test_Main {
 				File[] entries = cur_dir.listFiles();
 
 				for (File entry : entries) {
-					if (entry.isFile() && entry.getName().startsWith(Globals.test_prefix)) {
+					if (entry.isFile() && entry.getName().startsWith(Globals.TEST_PREFIX)) {
 						entry.delete();
 					} else {
 						if (entry.isDirectory()) {

@@ -12,9 +12,15 @@ import common.Globals;
 import common.Logger;
 
 public class Remote_Executioner {
+	private Logger logger;
+
 	public class Op_Res {
 		public int res = Globals.SUCCESS;
 		public String msg;
+	}
+
+	public Remote_Executioner(Logger logger_arg) {
+		this.logger = logger_arg;
 	}
 
 	protected Op_Res execute_remote_cmd(String cmd, Session session) throws Exception {
@@ -34,11 +40,11 @@ public class Remote_Executioner {
 
 			op_res.msg = cmd_callback(channel, in);
 			if (channel.getExitStatus() == 0) {
-				Logger.log_success(cmd, host);
+				logger.log_success(cmd, host);
 			} else {
 				String err_msg = cmd_callback(channel, err);
 				op_res.res = Globals.FAILURE;
-				op_res.msg = Logger.construct_failure_string(cmd, host, err_msg);
+				op_res.msg = logger.construct_failure_string(cmd, host, err_msg);
 			}
 		} catch (Exception e) {
 		} finally {

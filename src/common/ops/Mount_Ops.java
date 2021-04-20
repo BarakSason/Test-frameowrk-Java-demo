@@ -1,12 +1,13 @@
 package common.ops;
 
 import common.Abstract_Ops;
+import common.Logger;
 import common.distributed_executioner.Distributed_Executioner;
 
 public class Mount_Ops extends Abstract_Ops {
 
-	public Mount_Ops(Distributed_Executioner distributed_executioner_arg) {
-		super(distributed_executioner_arg);
+	public Mount_Ops(Logger logger, Distributed_Executioner distributed_executioner) {
+		super(logger, distributed_executioner);
 	}
 
 	public void mount_volume(String host, String volname, String mountpoint) throws Exception {

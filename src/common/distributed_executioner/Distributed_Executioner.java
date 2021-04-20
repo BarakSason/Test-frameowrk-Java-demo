@@ -11,6 +11,8 @@ import ssh.Connection_Manager;
 import ssh.Remote_Executioner;
 
 public class Distributed_Executioner extends Remote_Executioner {
+	Logger logger;
+
 	public ArrayList<String> availble_servers;
 	public ArrayList<String> in_use_servers;
 	private HashMap<String, Session> server_sessions;
@@ -19,7 +21,10 @@ public class Distributed_Executioner extends Remote_Executioner {
 	public ArrayList<String> in_use_clients;
 	private HashMap<String, Session> client_sessions;
 
-	public Distributed_Executioner() {
+	public Distributed_Executioner(Logger logger_arg) {
+		super(logger_arg);
+		this.logger = logger_arg;
+
 		availble_servers = Params_Handler.get_servers();
 		in_use_servers = new ArrayList<String>();
 		server_sessions = new HashMap<String, Session>();
@@ -30,22 +35,16 @@ public class Distributed_Executioner extends Remote_Executioner {
 	}
 
 	public Op_Res execute_cmd_on_single_server(String cmd, String host) throws Exception {
-		Logger.pre_op_log(cmd, host);
+		logger.pre_op_log(cmd, host);
 		Session session = connect_server_session(host);
 		Op_Res op_res = execute_remote_cmd(cmd, session);
-		/*
-		 * Debug log - (e.g. "Execution of command "X" on host "Y" returned...)
-		 */
 		return op_res;
 	}
 
 	public Op_Res execute_cmd_on_single_client(String cmd, String host) throws Exception {
-		Logger.pre_op_log(cmd, host);
+		logger.pre_op_log(cmd, host);
 		Session session = connect_client_session(host);
 		Op_Res op_res = execute_remote_cmd(cmd, session);
-		/*
-		 * Debug log - (e.g. "Execution of command "X" on host "Y" returned...)
-		 */
 		return op_res;
 	}
 

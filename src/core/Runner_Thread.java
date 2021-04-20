@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import common.Globals;
+import common.Logger;
 
 public class Runner_Thread extends Thread {
 	private static final String INIT_METHOD = "init"; // Name of the init method (should be same across
@@ -13,8 +14,10 @@ public class Runner_Thread extends Thread {
 	private static final String TERMINATE_METHOD = "terminate"; // Name of the terminate method (should be same across
 																// all tests)
 	private Object test_instance;
+	private Logger logger;
 
-	public Runner_Thread(Object test_instance_arg) {
+	public Runner_Thread(Logger logger_arg, Object test_instance_arg) {
+		this.logger = logger_arg;
 		this.test_instance = test_instance_arg;
 	}
 
@@ -23,6 +26,8 @@ public class Runner_Thread extends Thread {
 		try {
 			/* Create a map of test methods */
 			HashMap<String, Method> methods_map = create_methods_map(test_instance.getClass());
+
+			logger.log("*** Running " + test_instance.getClass().getSimpleName() + " ***");
 
 			/* Invoke the test method */
 			Method init_method = methods_map.get(INIT_METHOD);
@@ -38,9 +43,9 @@ public class Runner_Thread extends Thread {
 
 			// TODO: Don't use test_instance.getClass().getSimpleName()
 			if (test_result == Globals.SUCCESS) {
-				System.out.println("*** " + test_instance.getClass().getSimpleName() + " Passed ***");
+				logger.log("*** " + test_instance.getClass().getSimpleName() + " Passed ***");
 			} else {
-				System.out.println("*** " + test_instance.getClass().getSimpleName() + " Failed ***");
+				logger.log("*** " + test_instance.getClass().getSimpleName() + " Failed ***");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
