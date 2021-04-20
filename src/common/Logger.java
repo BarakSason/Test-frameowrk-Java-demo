@@ -14,8 +14,8 @@ public class Logger {
 	private static String logs_path = Params_Handler.read_value("logs_path") + "/logs_"
 			+ new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 
-	public Logger(String test_type, String component, String test_name) throws Exception {
-		init(logs_path + "/" + test_type + "/" + component + "/" + test_name + ".log");
+	public Logger(String test_type, String component, String test_name, String vol_type) throws Exception {
+		init(logs_path + "/" + test_type + "/" + component + "/" + test_name + "-" + vol_type + ".log");
 	}
 
 	/* To be used only by the framework itself */

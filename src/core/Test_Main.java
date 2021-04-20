@@ -10,15 +10,15 @@ import common.ops.*;
 import ssh.Connection_Manager;
 
 public class Test_Main {
+	static Logger logger;
+
 	public static void main(String args[]) throws Exception {
 		Distributed_Executioner distributed_executioner = null;
-		
-		Logger logger = null;
 
 		try {
 			Params_Handler.parseConfigFile(args[0]); // args[0] - Path of config file
-			String test_dir_path = args[1]; // args[0] - Path tests dir
 			logger = new Logger();
+			String test_dir_path = Params_Handler.read_value("tests_path");
 
 			/* Initiating SSH connection */
 			Connection_Manager.init();
@@ -73,7 +73,7 @@ public class Test_Main {
 		gluster_ops.glusterd_stop(random_server);
 	}
 
-	private static void delete_test_binaries() {
+	private static void delete_test_binaries() throws Exception {
 		// TODO: Parse path from config file
 
 		LinkedList<String> dirs_to_scan = new LinkedList<String>();
@@ -94,7 +94,7 @@ public class Test_Main {
 					}
 				}
 			} catch (Exception e) {
-				e.printStackTrace(); // TODO: replace with logging
+				logger.log_failure(e);
 			}
 		}
 	}

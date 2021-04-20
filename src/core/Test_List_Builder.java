@@ -12,19 +12,19 @@ import javax.tools.ToolProvider;
 
 import common.Framework_Exception;
 import common.Globals;
+import test.Test_Wrapper;
 
 public class Test_List_Builder {
 	// TODO: Parse path from config file
-	private static final String PACKAGE_NAME = "tests.functional.dht"; // Package name of tests
 	private static final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
-	public static LinkedList<Object> create_test_list(String test_dir_path) throws Exception {
+	public static LinkedList<Test_Wrapper> create_test_list(String test_dir_path) throws Exception {
 		LinkedList<String> dirs_to_scan = new LinkedList<String>();
 		dirs_to_scan.add(test_dir_path);
 
 		File classes_dir = new File(Globals.BIN_PATH);
 
-		LinkedList<Object> tests_to_run = new LinkedList<Object>();
+		LinkedList<Test_Wrapper> tests_to_run = new LinkedList<Test_Wrapper>();
 
 		while (!dirs_to_scan.isEmpty()) {
 			File tests_dir = new File(dirs_to_scan.remove());
@@ -54,12 +54,11 @@ public class Test_List_Builder {
 					compile_test(test_path);
 
 					/* Load the test class */
-					Class<?> test_class = load_test_class(classes_dir, test_name_java);
+					Class<?> test_class = load_test_class(classes_dir, test_type, component, test_name);
 
-					/* Instantiate the test */
-					Object test_instance = instantiate_test(test_class, test_type, component, test_name);
+					Test_Wrapper test_wrapper = new Test_Wrapper(test_class, test_type, component, test_name);
 
-					tests_to_run.add(test_instance);
+					tests_to_run.add(test_wrapper);
 				} else {
 					/* This is a dir - Add the path of the next dir to process */
 					if (entry.isDirectory()) {
@@ -74,24 +73,14 @@ public class Test_List_Builder {
 	}
 
 	/* Load a test class */
-	private static Class<?> load_test_class(File classes_dir, String test_name) throws Exception {
+	private static Class<?> load_test_class(File classes_dir, String test_type, String component, String test_name)
+			throws Exception {
 		Class<?> test_class = null;
 
 		URLClassLoader classLoader = URLClassLoader.newInstance(new URL[] { classes_dir.toURI().toURL() });
-		test_class = Class.forName(PACKAGE_NAME + "." + test_name.substring(0, test_name.indexOf(".")), true,
-				classLoader);
+		test_class = Class.forName("tests." + test_type + "." + component + "." + test_name, true, classLoader);
 
 		return test_class;
-	}
-
-	/* Instantiate a test */
-	private static Object instantiate_test(Class<?> test_class, String test_type, String component, String test_name)
-			throws Exception {
-		Object test_instance = null;
-		test_instance = test_class.getDeclaredConstructor(String.class, String.class, String.class)
-				.newInstance(test_type, component, test_name);
-
-		return test_instance;
 	}
 
 	/* Compile a test */
