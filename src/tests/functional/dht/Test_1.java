@@ -3,9 +3,7 @@ package tests.functional.dht;
 import test.Abstract_Test;
 
 public class Test_1 extends Abstract_Test {
-	public Test_1() {
-		vol_types = "dist;dist-rep;disp";
-	}
+	public static String vol_types="dist;dist-rep;disp";
 
 	public void execute_test() throws Exception {
 		io_ops.execute_io_cmd(random_client, "ls -l /root");

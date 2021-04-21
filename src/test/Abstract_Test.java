@@ -29,7 +29,6 @@ public abstract class Abstract_Test {
 	protected String component;
 	protected String test_name;
 	protected String vol_type;
-	protected String vol_types;
 
 	protected String random_server;
 	protected String random_client;
@@ -116,9 +115,5 @@ public abstract class Abstract_Test {
 			test_res = Globals.FAILURE;
 			logger.log_failure(e);
 		}
-	}
-
-	public String get_vol_types() {
-		return vol_types;
 	}
 }

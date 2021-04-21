@@ -1,4 +1,4 @@
-tests_path: /root/eclipse-workspace-java/Test_Framework/tests
+tests_path: /root/eclipse-workspace-java/Test_Framework/src/tests
 logs_path: /root/eclipse-workspace-java/Test_Framework/logs
 
 # 'servers' is list of IP's of servers in the cluster.

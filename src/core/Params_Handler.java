@@ -2,6 +2,8 @@ package core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Set;
 
 import core.parsing.Config_Parser;
 
@@ -27,20 +29,20 @@ public class Params_Handler {
 	}
 
 	// TODO: Handle brick root(s) per server
-//	@SuppressWarnings({ "unchecked", "rawtypes" })
-//	public static ArrayList<String> get_servers_info() {
-//		ArrayList<String> brick_paths = new ArrayList<String>();
-//
-//		Object severs_ino_obj = param_map.get("servers_info");
-//		LinkedHashMap severs_info_map = (LinkedHashMap<String, String>) severs_ino_obj;
-//		Set<String> hosts = severs_info_map.keySet();
-//
-//		for (String host : hosts) {
-//			LinkedHashMap server_info = (LinkedHashMap<String, String>) severs_info_map.get(host);
-//			ArrayList<String> brick_roots = (ArrayList<String>) server_info.get("brick_root");
-//			brick_paths.add(brick_roots.get(0));
-//		}
-//
-//		return brick_paths;
-//	}
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static ArrayList<String> get_servers_info() {
+		ArrayList<String> brick_paths = new ArrayList<String>();
+
+		Object severs_ino_obj = param_map.get("servers_info");
+		LinkedHashMap severs_info_map = (LinkedHashMap<String, String>) severs_ino_obj;
+		Set<String> hosts = severs_info_map.keySet();
+
+		for (String host : hosts) {
+			LinkedHashMap server_info = (LinkedHashMap<String, String>) severs_info_map.get(host);
+			ArrayList<String> brick_roots = (ArrayList<String>) server_info.get("brick_root");
+			brick_paths.add(brick_roots.get(0));
+		}
+
+		return brick_paths;
+	}
 }
