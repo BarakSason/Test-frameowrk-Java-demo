@@ -1,5 +1,7 @@
 package test;
 
+import java.lang.reflect.Method;
+
 import common.Globals;
 import common.Logger;
 import common.distributed_executioner.Distributed_Executioner;
@@ -35,6 +37,9 @@ public abstract class Abstract_Test {
 	protected String volname;
 	protected String mountpoint;
 
+	long start_time;
+	long end_time;
+
 	protected abstract void execute_test() throws Exception;
 
 	public int abstract_execute_test() throws Exception {
@@ -63,6 +68,8 @@ public abstract class Abstract_Test {
 
 	public void init(String test_type_arg, String component_arg, String test_name_arg, String vol_type_arg)
 			throws Exception {
+		start_time = System.currentTimeMillis();
+
 		this.test_type = test_type_arg;
 		this.component = component_arg;
 		this.test_name = test_name_arg;
@@ -111,9 +118,25 @@ public abstract class Abstract_Test {
 			if (distributed_executioner != null) {
 				distributed_executioner.disconnect_sessions();
 			}
+
 		} catch (Exception e) {
 			test_res = Globals.FAILURE;
 			logger.log_failure(e);
 		}
+
+		end_time = System.currentTimeMillis();
+
+		if (test_res == Globals.SUCCESS) {
+			long execution_time = get_execution_time();
+
+			logger.log_only("*** " + "Test " + test_type + "/" + component + "/" + test_name
+					+ " Passed ***, executed in " + execution_time / 1000 + "." + execution_time % 1000 + " seconds");
+		} else {
+			logger.log_only("*** " + "Test " + test_type + "/" + component + "/" + test_name + " Failed ***");
+		}
+	}
+
+	public long get_execution_time() {
+		return end_time - start_time;
 	}
 }

@@ -105,6 +105,17 @@ public class Logger {
 		writer.flush();
 	}
 
+	public void log_and_print(String msg) throws Exception {
+		System.out.println(generate_log_msg_prefix("I") + msg);
+		writer.write(generate_log_msg_prefix("I") + msg + "\n");
+		writer.flush();
+	}
+
+	public void log_only(String msg) throws Exception {
+		writer.write(generate_log_msg_prefix("I") + msg + "\n");
+		writer.flush();
+	}
+
 	private String generate_log_msg_prefix(String log_level) {
 		return (new SimpleDateFormat("[yyyy-MM-dd-HH-mm-ss]").format(new Date()) + " [" + log_level + "] ");
 	}

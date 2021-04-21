@@ -37,10 +37,7 @@ public class Test_List_Builder {
 
 				if (entry.isFile() && test_name_java.startsWith(Globals.TEST_PREFIX)
 						&& test_name_java.endsWith(".java")) {
-					/*
-					 * This is a test - Compile, instantiate, create methods map and it add to the
-					 * test list
-					 */
+					/* This is a test - Get key info, compile it and load the test class */
 					String test_path = new String(tests_dir_path + "/" + test_name_java);
 
 					/* Get key values */

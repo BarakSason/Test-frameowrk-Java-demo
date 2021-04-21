@@ -13,15 +13,15 @@ public class Volume_Ops extends Abstract_Ops {
 		super(logger, distributed_executioner);
 	}
 
-	// TODO: Add missing argumnets and eliminate hardcoded values
 	public void volume_create(String host, String volname, boolean force) throws Exception {
 		ArrayList<String> servers = Params_Handler.get_servers();
 		StringBuilder bricks_str = new StringBuilder();
 
 		for (int i = 0; i < 3; ++i) {
-			bricks_str.append(servers.get(i) + ":" + "/root/bricks" + volname + "-" + i + " ");
+			bricks_str.append(servers.get(i) + ":" + "/root/bricks" + volname + "-" + i + " "); // TODO: Parse brick
+																								// path per server
 		}
-//		String bricks = "VM1:/root/bricks/brick1 VM2:/root/bricks/brick2 VM3:/root/bricks/brick3";
+
 		String cmd = "gluster volume create " + volname + " " + bricks_str.toString();
 
 		if (force) {
