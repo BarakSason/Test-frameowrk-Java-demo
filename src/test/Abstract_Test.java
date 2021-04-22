@@ -42,7 +42,7 @@ public abstract class Abstract_Test {
 
 	public int abstract_execute_test() throws Exception {
 		try {
-			logger.log("Test " + test_type + "/" + component + "/" + test_name + " running");
+			logger.log("Test " + test_type + "/" + component + "/" + test_name + "-" + vol_type + " running");
 			execute_test();
 		} catch (Exception e) {
 			test_res = Globals.FAILURE;
@@ -103,7 +103,7 @@ public abstract class Abstract_Test {
 
 	public void terminate() throws Exception {
 		try {
-			logger.log("Test " + test_type + "/" + component + "/" + test_name + " terminaiting");
+			logger.log("Test " + test_type + "/" + component + "/" + test_name + "-" + vol_type + " terminaiting");
 
 			/* Volume stop, delete, mount and remove mountpoint */
 			volume_ops.volume_stop(random_server, volname);
@@ -127,10 +127,11 @@ public abstract class Abstract_Test {
 		if (test_res == Globals.SUCCESS) {
 			long execution_time = get_execution_time();
 
-			logger.log_only("*** " + "Test " + test_type + "/" + component + "/" + test_name
+			logger.log_only("*** " + "Test " + test_type + "/" + component + "/" + test_name + "-" + vol_type
 					+ " Passed ***, executed in " + execution_time / 1000 + "." + execution_time % 1000 + " seconds");
 		} else {
-			logger.log_only("*** " + "Test " + test_type + "/" + component + "/" + test_name + " Failed ***");
+			logger.log_only(
+					"*** " + "Test " + test_type + "/" + component + "/" + test_name + "-" + vol_type + " Failed ***");
 		}
 	}
 

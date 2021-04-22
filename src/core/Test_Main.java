@@ -13,6 +13,8 @@ public class Test_Main {
 	static Logger logger;
 
 	public static void main(String args[]) throws Exception {
+		long start_time = System.currentTimeMillis();
+		long end_time;
 		Distributed_Executioner distributed_executioner = null;
 
 		try {
@@ -52,6 +54,11 @@ public class Test_Main {
 		/* Remove compiled test binaries */
 		delete_test_binaries();
 
+		end_time = System.currentTimeMillis();
+		long execution_time = end_time - start_time;
+
+		logger.log_and_print(
+				"*** Framework executed in " + execution_time / 1000 + "." + execution_time % 1000 + " seconds ***");
 	}
 
 	private static void create_cluster(Distributed_Executioner distributed_executioner, Gluster_Ops gluster_ops,

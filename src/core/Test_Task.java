@@ -49,11 +49,11 @@ public class Test_Task implements Runnable {
 				long execution_time = (long) time_method.invoke(test_instance);
 
 				logger.log_and_print("*** " + "Test " + test_wrapper.test_type + "/" + test_wrapper.component + "/"
-						+ test_wrapper.test_name + " Passed ***, executed in " + execution_time / 1000 + "."
-						+ execution_time % 1000 + " seconds");
+						+ test_wrapper.test_name + "-" + vol_type + " Passed ***, executed in " + execution_time / 1000
+						+ "." + execution_time % 1000 + " seconds");
 			} else {
 				logger.log_and_print("*** " + "Test " + test_wrapper.test_type + "/" + test_wrapper.component + "/"
-						+ test_wrapper.test_name + " Failed ***");
+						+ test_wrapper.test_name + "-" + vol_type + " Failed ***");
 			}
 		} catch (Exception e) {
 			try {

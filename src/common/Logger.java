@@ -8,7 +8,7 @@ import java.util.Date;
 import core.Params_Handler;
 
 public class Logger {
-	private static final boolean is_prints_enabled = true;
+	private static final boolean is_prints_enabled = false;
 	private File log_file;
 	private FileWriter writer;
 	private static String logs_path = Params_Handler.read_value("logs_path") + "/logs_"
