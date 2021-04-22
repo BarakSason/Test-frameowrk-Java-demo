@@ -5,7 +5,7 @@ import java.util.Properties;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 
-public class Connection_Manager {
+public abstract class Connection_Manager {
 	private static final String user = "root";
 	private static final int port = 22;
 	private final static String privateKey = "/root/.ssh/private_key";

@@ -14,7 +14,7 @@ import common.Framework_Exception;
 import common.Globals;
 import test.Test_Wrapper;
 
-public class Test_List_Builder {
+public abstract class Test_List_Builder {
 	// TODO: Parse path from config file
 	private static final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 

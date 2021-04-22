@@ -22,26 +22,26 @@ public class Test_Main {
 			logger = new Logger();
 			String test_dir_path = Params_Handler.read_value("tests_path");
 
-			/* Initiating SSH connection */
+			/* Initiating SSH library */
 			Connection_Manager.init();
 
+			/* Selecting tests to run */
+			Test_Runner.tests_to_run = Test_List_Builder.create_test_list(test_dir_path);
+			
 			/* Instantiate Ops libs required by framework for cluster creation */
 			distributed_executioner = new Distributed_Executioner(logger);
 			Gluster_Ops gluster_ops = new Gluster_Ops(logger, distributed_executioner);
 			Peer_Ops peer_ops = new Peer_Ops(logger, distributed_executioner);
 
 			/* Creating cluster */
-			String random_server = distributed_executioner.randomize_server();
-			create_cluster(distributed_executioner, gluster_ops, peer_ops, random_server);
-
-			/* Selecting tests to run */
-			Test_Runner.tests_to_run = Test_List_Builder.create_test_list(test_dir_path);
+			String framework_server = distributed_executioner.randomize_server();
+			create_cluster(distributed_executioner, gluster_ops, peer_ops, framework_server);
 
 			/* Running tests */
 			Test_Runner.run_tests(logger);
 
 			/* Destroying cluster */
-			destroy_cluster(distributed_executioner, gluster_ops, peer_ops, random_server);
+			destroy_cluster(distributed_executioner, gluster_ops, peer_ops, framework_server);
 		} catch (Exception e) {
 			logger.log_failure(e);
 		}
@@ -62,22 +62,22 @@ public class Test_Main {
 	}
 
 	private static void create_cluster(Distributed_Executioner distributed_executioner, Gluster_Ops gluster_ops,
-			Peer_Ops peer_ops, String random_server) throws Exception {
-		gluster_ops.glusterd_start(random_server);
+			Peer_Ops peer_ops, String framework_server) throws Exception {
+		gluster_ops.glusterd_start(framework_server);
 
 		for (String server : distributed_executioner.availble_servers) {
 			gluster_ops.glusterd_start(server);
-			peer_ops.peer_probe(random_server, server);
+			peer_ops.peer_probe(framework_server, server);
 		}
 	}
 
 	private static void destroy_cluster(Distributed_Executioner distributed_executioner, Gluster_Ops gluster_ops,
-			Peer_Ops peer_ops, String random_server) throws Exception {
+			Peer_Ops peer_ops, String framework_server) throws Exception {
 		for (String server : distributed_executioner.availble_servers) {
-			peer_ops.peer_detach(random_server, server);
+			peer_ops.peer_detach(framework_server, server);
 			gluster_ops.glusterd_stop(server);
 		}
-		gluster_ops.glusterd_stop(random_server);
+		gluster_ops.glusterd_stop(framework_server);
 	}
 
 	private static void delete_test_binaries() throws Exception {

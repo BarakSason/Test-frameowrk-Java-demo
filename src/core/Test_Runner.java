@@ -11,7 +11,8 @@ import java.util.concurrent.TimeUnit;
 import common.Logger;
 import test.Test_Wrapper;
 
-public class Test_Runner {
+public abstract class Test_Runner {
+	private static final String VOL_TYPES_STR = "vol_types";
 	public static LinkedList<Test_Wrapper> tests_to_run;
 	private static final boolean is_parallel = true;
 
@@ -30,7 +31,7 @@ public class Test_Runner {
 
 				/* Read vol types for the test */
 				HashMap<String, Field> fields_map = create_fields_map(test_wrapper.test_class);
-				String vol_types_str = (String) fields_map.get("vol_types").get(test_instance_obj);
+				String vol_types_str = (String) fields_map.get(VOL_TYPES_STR).get(test_instance_obj);
 				String[] vol_types = vol_types_str.split(";");
 
 				for (String vol_type : vol_types) {
@@ -52,7 +53,7 @@ public class Test_Runner {
 
 				/* Read vol types for the test */
 				HashMap<String, Field> fields_map = create_fields_map(test_wrapper.test_class);
-				String vol_types_str = (String) fields_map.get("vol_types").get(test_instance_obj);
+				String vol_types_str = (String) fields_map.get(VOL_TYPES_STR).get(test_instance_obj);
 				String[] vol_types = vol_types_str.split(";");
 
 				for (String vol_type : vol_types) {

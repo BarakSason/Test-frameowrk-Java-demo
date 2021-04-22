@@ -7,7 +7,7 @@ import java.util.Set;
 
 import core.parsing.Config_Parser;
 
-public class Params_Handler {
+public abstract class Params_Handler {
 	private static HashMap<String, ArrayList<String>> param_map; // Static hashmap for all tests and
 	// other components to read from
 

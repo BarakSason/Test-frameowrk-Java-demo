@@ -30,8 +30,8 @@ public abstract class Abstract_Test {
 	protected String test_name;
 	protected String vol_type;
 
-	protected String random_server;
-	protected String random_client;
+	protected String server_1;
+	protected String client_1;
 	protected String volname;
 	protected String mountpoint;
 
@@ -72,8 +72,8 @@ public abstract class Abstract_Test {
 		this.component = component_arg;
 		this.test_name = test_name_arg;
 		this.vol_type = vol_type_arg;
+		
 		try {
-
 			core_init();
 
 			volume_ops = new Volume_Ops(logger, distributed_executioner);
@@ -81,20 +81,20 @@ public abstract class Abstract_Test {
 			io_ops = new IO_Ops(logger, distributed_executioner);
 
 			/* Randomize 1 server and 1 client machines */
-			random_server = distributed_executioner.randomize_server();
-			random_client = distributed_executioner.randomize_client();
+			server_1 = distributed_executioner.randomize_server();
+			client_1 = distributed_executioner.randomize_client();
 
 			/* Generate names & paths */
 			volname = test_name + "-" + vol_type;
 			mountpoint = "/mnt/" + volname; // TODO: Parse mountpoint from config file, per server (don't assume /mnt)
 
 			/* Volume create and start */
-			volume_ops.volume_create(random_server, volname, true);
-			volume_ops.volume_start(random_server, volname);
+			volume_ops.volume_create(server_1, volname, true);
+			volume_ops.volume_start(server_1, volname);
 
 			/* Mountpoint creation and volume mount */
-			io_ops.execute_io_cmd(random_client, "cd /mnt; mkdir " + volname);
-			mount_ops.mount_volume(random_client, volname, mountpoint);
+			io_ops.execute_io_cmd(client_1, "cd /mnt; mkdir " + volname);
+			mount_ops.mount_volume(client_1, volname, mountpoint);
 		} catch (Exception e) {
 			test_res = Globals.FAILURE;
 			logger.log_failure(e);
@@ -106,12 +106,12 @@ public abstract class Abstract_Test {
 			logger.log("Test " + test_type + "/" + component + "/" + test_name + "-" + vol_type + " terminaiting");
 
 			/* Volume stop, delete, mount and remove mountpoint */
-			volume_ops.volume_stop(random_server, volname);
-			volume_ops.volume_delete(random_server, volname);
+			volume_ops.volume_stop(server_1, volname);
+			volume_ops.volume_delete(server_1, volname);
 
 			/* Unmount and delete mountpoint */
-			mount_ops.unmount_volume(random_client, volname, mountpoint);
-			io_ops.execute_io_cmd(random_client, "rm -rf " + mountpoint);
+			mount_ops.unmount_volume(client_1, volname, mountpoint);
+			io_ops.execute_io_cmd(client_1, "rm -rf " + mountpoint);
 
 			if (distributed_executioner != null) {
 				distributed_executioner.disconnect_sessions();

@@ -8,7 +8,7 @@ import java.util.Date;
 import core.Params_Handler;
 
 public class Logger {
-	private static final boolean is_prints_enabled = false;
+	private static final boolean is_prints_enabled = true;
 	private File log_file;
 	private FileWriter writer;
 	private static String logs_path = Params_Handler.read_value("logs_path") + "/logs_"
@@ -57,11 +57,11 @@ public class Logger {
 			writer.write(generate_log_msg_prefix("E") + ((Framework_Exception) e).err_msg);
 			writer.flush();
 			StackTraceElement[] ste = e.getStackTrace();
-			for (int i = 0; i < 4; ++i) { // Due to the hierarchy of the TC, we will always have 4 relevant stack frames
+			for (int i = 0; i < ste.length; ++i) {
 				if (is_prints_enabled) {
-					System.out.println(generate_log_msg_prefix("E") + ste[i].toString());
+					System.out.println(ste[i].toString());
 				}
-				writer.write(generate_log_msg_prefix("E") + ste[i].toString() + "\n");
+				writer.write(ste[i].toString() + "\n");
 				writer.flush();
 			}
 		} else {
