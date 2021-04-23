@@ -17,8 +17,9 @@ public class Volume_Ops extends Abstract_Ops {
 		ArrayList<String> servers = Params_Handler.get_servers();
 		StringBuilder bricks_str = new StringBuilder();
 
-		for (int i = 0; i < 3; ++i) {
-			bricks_str.append(servers.get(i) + ":" + "/root/bricks" + volname + "-" + i + " "); // TODO: Parse brick
+		for (int i = 0; i < servers.size(); ++i) {
+			bricks_str.append(servers.get(i) + ":" + "/root/bricks" + volname + "-" + i + " "); // TODO: Parse and
+																								// randomize brick
 																								// path per server
 		}
 

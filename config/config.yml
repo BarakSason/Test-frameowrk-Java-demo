@@ -1,46 +1,22 @@
 tests_path: /root/eclipse-workspace-java/Test_Framework/src/tests
 logs_path: /root/eclipse-workspace-java/Test_Framework/logs
 
-# 'servers' is list of IP's of servers in the cluster.
-# This section has to be defined.
-# Below x denotes integer
-# server-vm[x] has to be replaced by ip-address
-# server-vm[x] can be used to refer to its ip-address in this file using
-# *server-vm[x] wherever required and can also be used in test cases using 
-# just "server-vm[x]"
-servers:
-    - &server_1 VM1 #Example- &server_1 0.0.0.0
-    - &server_2 VM2 #Example- &server_1 0.0.0.0
-    - &server_3 VM3 #Example- &server_1 0.0.0.0
-
-# 'clients' is list of Hostnames/IP's of clients in the cluster.
-# This section has to be defined.
-# Below x denotes integer
-# client-vm[x] has to be replaced by ip-address
-# client_vm[x] can be used to refer to its ip-address in this file using
-# *client_vm[x] wherever required and can also be used in test cases using 
-# just "client_vm[x]"
-clients:
-    - &client_1 VM1 #Example- &client_vm1 0.0.0.0
-    - &client_2 VM2
-    - &client_3 VM3
-
 # 'servers_info' is info about each server in the cluster.
 # the brick_root is a list where multiple mount points can be added.
 # brick_root i.e dirname of brick mount point.
 # user and password are also defined for creating ssh connection
 # This section has to be defined.
 
-servers_info:
-    *server_1: &VM1
+servers:
+    VM1:
         brick_root: ["/root/bricks"] #Example- brick_root: ["/bricks","/gluster"]
         user: "root"
         passwd: "redhat"
-    *server_2: &VM2
+    VM2:
         brick_root: ["/root/bricks"]
         user: "root"
         passwd: "redhat"
-    *server_3: &VM3
+    VM3:
         brick_root: ["/root/bricks"]
         user: "root"
         passwd: "redhat"
@@ -51,14 +27,14 @@ servers_info:
 # user and password can be defined for creating ssh connection
 # This section has to be defined.
 # ************* TODO: Add mountpoint per client
-clients_info:
-    *client_1: &VM1
+clients:
+    VM1:
         user: "root"
         passwd: "redhat"
-    *client_2: &VM2
+    VM2:
         user: 'root'
         passwd: "redhat"
-    *client_3: &VM3
+    VM3:
         user: 'root'
         passwd: "redhat"
 

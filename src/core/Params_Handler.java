@@ -3,46 +3,32 @@ package core;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Set;
 
 import core.parsing.Config_Parser;
 
 public abstract class Params_Handler {
-	private static HashMap<String, ArrayList<String>> param_map; // Static hashmap for all tests and
-	// other components to read from
+	private static HashMap<String, Object> param_map; // Static hashmap for all tests and other components to read from
 
 	public static void parseConfigFile(String config_file_path) throws Exception {
 		param_map = Config_Parser.parse_config_file(config_file_path);
 	}
 
 	/* A set of APIs to interact with the param hashmap */
+	@SuppressWarnings("unchecked")
 	public static ArrayList<String> get_servers() {
-		return new ArrayList<String>(param_map.get("servers")); // Deep copy
+		LinkedHashMap<String, ArrayList<String>> servers_info = (LinkedHashMap<String, ArrayList<String>>) param_map
+				.get("servers");
+		return new ArrayList<String>(servers_info.keySet());
 	}
 
+	@SuppressWarnings("unchecked")
 	public static ArrayList<String> get_clients() {
-		return new ArrayList<String>(param_map.get("clients")); // Deep copy
+		LinkedHashMap<String, ArrayList<String>> cleints_info = (LinkedHashMap<String, ArrayList<String>>) param_map
+				.get("clients");
+		return new ArrayList<String>(cleints_info.keySet());
 	}
 
 	public static String read_value(String key) {
-		return ((Object) param_map.get(key)).toString();
-	}
-
-	// TODO: Handle brick root(s) per server
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static ArrayList<String> get_servers_info() {
-		ArrayList<String> brick_paths = new ArrayList<String>();
-
-		Object severs_ino_obj = param_map.get("servers_info");
-		LinkedHashMap severs_info_map = (LinkedHashMap<String, String>) severs_ino_obj;
-		Set<String> hosts = severs_info_map.keySet();
-
-		for (String host : hosts) {
-			LinkedHashMap server_info = (LinkedHashMap<String, String>) severs_info_map.get(host);
-			ArrayList<String> brick_roots = (ArrayList<String>) server_info.get("brick_root");
-			brick_paths.add(brick_roots.get(0));
-		}
-
-		return brick_paths;
+		return param_map.get(key).toString();
 	}
 }

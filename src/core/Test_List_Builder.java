@@ -41,8 +41,8 @@ public abstract class Test_List_Builder {
 					String test_path = new String(tests_dir_path + "/" + test_name_java);
 
 					/* Get key values */
-					String helper = tests_dir_path.substring(0, tests_dir_path.lastIndexOf("/"));
-					String test_type = helper.substring(helper.lastIndexOf("/") + 1, helper.length());
+					String tmp = tests_dir_path.substring(0, tests_dir_path.lastIndexOf("/"));
+					String test_type = tmp.substring(tmp.lastIndexOf("/") + 1, tmp.length());
 					String component = tests_dir_path.substring(tests_dir_path.lastIndexOf("/") + 1,
 							tests_dir_path.length());
 					String test_name = test_name_java.substring(0, test_name_java.indexOf("."));
@@ -53,9 +53,7 @@ public abstract class Test_List_Builder {
 					/* Load the test class */
 					Class<?> test_class = load_test_class(classes_dir, test_type, component, test_name);
 
-					Test_Wrapper test_wrapper = new Test_Wrapper(test_class, test_type, component, test_name);
-
-					tests_to_run.add(test_wrapper);
+					tests_to_run.add(new Test_Wrapper(test_class, test_type, component, test_name));
 				} else {
 					/* This is a dir - Add the path of the next dir to process */
 					if (entry.isDirectory()) {
@@ -66,18 +64,13 @@ public abstract class Test_List_Builder {
 		}
 
 		return tests_to_run;
-
 	}
 
 	/* Load a test class */
 	private static Class<?> load_test_class(File classes_dir, String test_type, String component, String test_name)
 			throws Exception {
-		Class<?> test_class = null;
-
 		URLClassLoader classLoader = URLClassLoader.newInstance(new URL[] { classes_dir.toURI().toURL() });
-		test_class = Class.forName("tests." + test_type + "." + component + "." + test_name, true, classLoader);
-
-		return test_class;
+		return Class.forName("tests." + test_type + "." + component + "." + test_name, true, classLoader);
 	}
 
 	/* Compile a test */

@@ -42,7 +42,7 @@ public abstract class Abstract_Test {
 
 	public int abstract_execute_test() throws Exception {
 		try {
-			logger.log("Test " + test_type + "/" + component + "/" + test_name + "-" + vol_type + " running");
+			logger.log_and_print("Test " + test_type + "/" + component + "/" + test_name + "-" + vol_type + " running");
 			execute_test();
 		} catch (Exception e) {
 			test_res = Globals.FAILURE;
