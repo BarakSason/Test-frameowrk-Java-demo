@@ -27,7 +27,7 @@ public class Test_Main {
 
 			/* Selecting tests to run */
 			Test_Runner.tests_to_run = Test_List_Builder.create_test_list(test_dir_path);
-			
+
 			/* Instantiate Ops libs required by framework for cluster creation */
 			distributed_executioner = new Distributed_Executioner(logger);
 			Gluster_Ops gluster_ops = new Gluster_Ops(logger, distributed_executioner);
@@ -42,6 +42,8 @@ public class Test_Main {
 
 			/* Destroying cluster */
 			destroy_cluster(distributed_executioner, gluster_ops, peer_ops, framework_server);
+
+			Results_Handler.display_results(logger);
 		} catch (Exception e) {
 			logger.log_failure(e);
 		}
@@ -59,6 +61,8 @@ public class Test_Main {
 
 		logger.log_and_print(
 				"*** Framework executed in " + execution_time / 1000 + "." + execution_time % 1000 + " seconds ***");
+		
+		
 	}
 
 	private static void create_cluster(Distributed_Executioner distributed_executioner, Gluster_Ops gluster_ops,

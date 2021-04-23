@@ -98,5 +98,11 @@ public class Distributed_Executioner extends Remote_Executioner {
 				session.disconnect();
 			}
 		}
+
+		for (Session session : client_sessions.values()) {
+			if (session.isConnected()) {
+				session.disconnect();
+			}
+		}
 	}
 }

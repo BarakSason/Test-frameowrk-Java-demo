@@ -6,6 +6,7 @@ import java.util.HashMap;
 import common.Globals;
 import common.Logger;
 import test.Test_Wrapper;
+import test.Test_Wrapper.Test_Res;
 
 public class Test_Task implements Runnable {
 	private static final String INIT_METHOD = "init";
@@ -29,24 +30,29 @@ public class Test_Task implements Runnable {
 
 	@Override
 	public void run() {
+		long execution_time = 0;
 		try {
-			/* Invoke the test method */
-			Method init_method = methods_map.get(INIT_METHOD);
-			init_method.invoke(test_instance, test_wrapper.test_type, test_wrapper.component, test_wrapper.test_name,
-					vol_type);
+			int test_res;
 
 			/* Invoke the test method */
-			Method test_method = methods_map.get(EXECUTE_TEST_METHOD);
-			int test_res = (int) test_method.invoke(test_instance);
+			Method init_method = methods_map.get(INIT_METHOD);
+			test_res = (int) init_method.invoke(test_instance, test_wrapper.test_type, test_wrapper.component,
+					test_wrapper.test_name, vol_type);
+
+			if (test_res == Globals.SUCCESS) {
+				/* Invoke the test method */
+				Method test_method = methods_map.get(EXECUTE_TEST_METHOD);
+				test_res = (int) test_method.invoke(test_instance);
+			}
 
 			/* Invoke the terminate method */
 			Method terminate_method = methods_map.get(TERMINATE_METHOD);
-			terminate_method.invoke(test_instance);
+			test_res = (int) terminate_method.invoke(test_instance);
 
 			if (test_res == Globals.SUCCESS) {
 				/* Invoke the terminate method */
 				Method time_method = methods_map.get(TIME_METHOD);
-				long execution_time = (long) time_method.invoke(test_instance);
+				execution_time = (long) time_method.invoke(test_instance);
 
 				logger.log_and_print("*** " + "Test " + test_wrapper.test_type + "/" + test_wrapper.component + "/"
 						+ test_wrapper.test_name + "-" + vol_type + " Passed ***, executed in " + execution_time / 1000
@@ -54,6 +60,10 @@ public class Test_Task implements Runnable {
 			} else {
 				logger.log_and_print("*** " + "Test " + test_wrapper.test_type + "/" + test_wrapper.component + "/"
 						+ test_wrapper.test_name + "-" + vol_type + " Failed ***");
+
+			}
+			synchronized (test_wrapper) {
+				test_wrapper.res_list.add(new Test_Res(test_res, vol_type, execution_time));
 			}
 		} catch (Exception e) {
 			try {

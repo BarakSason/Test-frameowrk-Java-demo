@@ -10,21 +10,15 @@ public class Mount_Ops extends Abstract_Ops {
 		super(logger, distributed_executioner);
 	}
 
-	public void mount_volume(String host, String volname, String mountpoint) throws Exception {
-		String cmd = "mount -t glusterfs " + host + ":/" + volname + " " + mountpoint;
+	public void mount_volume(String client, String server, String volname, String mountpoint) throws Exception {
+		String cmd = "mount -t glusterfs " + server + ":/" + volname + " " + mountpoint;
 
-		execute_abstract_server_op(cmd, host);
+		execute_abstract_client_op(cmd, client);
 	}
-
-	// TODO: Add APIs without hostname, once an API to get a random host has been
-	// added
-//	public void mount_volume(String volname, String mountpoint) throws Exception {
-//		mount_volume(null, volname, mountpoint);
-//	}
 
 	public void unmount_volume(String host, String volname, String mountpoint) throws Exception {
 		String cmd = "umount " + mountpoint;
 
-		execute_abstract_server_op(cmd, host);
+		execute_abstract_client_op(cmd, host);
 	}
 }

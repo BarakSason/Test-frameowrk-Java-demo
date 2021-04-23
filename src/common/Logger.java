@@ -8,7 +8,7 @@ import java.util.Date;
 import core.Params_Handler;
 
 public class Logger {
-	private static final boolean is_prints_enabled = false;
+	private static final boolean is_prints_enabled = true;
 	private File log_file;
 	private FileWriter writer;
 	private static String logs_path = Params_Handler.read_value("logs_path") + "/logs_"
@@ -119,5 +119,17 @@ public class Logger {
 
 	private String generate_log_msg_prefix(String log_level) {
 		return (new SimpleDateFormat("[yyyy-MM-dd-HH-mm-ss]").format(new Date()) + " [" + log_level + "] ");
+	}
+
+	public void new_line() throws Exception {
+		System.out.println();
+		writer.write("\n");
+		writer.flush();
+	}
+
+	public void log_and_print_no_timestamp(String msg) throws Exception {
+		System.out.println(msg);
+		writer.write(msg + "\n");
+		writer.flush();
 	}
 }

@@ -33,16 +33,18 @@ public abstract class Abstract_Test {
 	protected String server_1;
 	protected String client_1;
 	protected String volname;
+	protected String mount_dir;
 	protected String mountpoint;
 
 	long start_time;
 	long end_time;
+	long execution_time;
 
 	protected abstract void execute_test() throws Exception;
 
 	public int abstract_execute_test() throws Exception {
 		try {
-			logger.log_and_print("Test " + test_type + "/" + component + "/" + test_name + "-" + vol_type + " running");
+			logger.log_and_print("Executing test " + test_type + "/" + component + "/" + test_name + "-" + vol_type);
 			execute_test();
 		} catch (Exception e) {
 			test_res = Globals.FAILURE;
@@ -64,7 +66,7 @@ public abstract class Abstract_Test {
 		distributed_executioner = new Distributed_Executioner(logger);
 	}
 
-	public void init(String test_type_arg, String component_arg, String test_name_arg, String vol_type_arg)
+	public int init(String test_type_arg, String component_arg, String test_name_arg, String vol_type_arg)
 			throws Exception {
 		start_time = System.currentTimeMillis();
 
@@ -72,7 +74,7 @@ public abstract class Abstract_Test {
 		this.component = component_arg;
 		this.test_name = test_name_arg;
 		this.vol_type = vol_type_arg;
-		
+
 		try {
 			core_init();
 
@@ -86,22 +88,26 @@ public abstract class Abstract_Test {
 
 			/* Generate names & paths */
 			volname = test_name + "-" + vol_type;
-			mountpoint = "/mnt/" + volname; // TODO: Parse mountpoint from config file, per server (don't assume /mnt)
+			mount_dir = volname + "-" + vol_type;
+			mountpoint = "/mnt/" + mount_dir; // TODO: Parse mountpoint from config file, per server
+												// (don't assume /mnt)
 
 			/* Volume create and start */
 			volume_ops.volume_create(server_1, volname, true);
 			volume_ops.volume_start(server_1, volname);
 
 			/* Mountpoint creation and volume mount */
-			io_ops.execute_io_cmd(client_1, "cd /mnt; mkdir " + volname);
-			mount_ops.mount_volume(client_1, volname, mountpoint);
+			io_ops.execute_io_cmd(client_1, "cd /mnt; mkdir " + mount_dir);
+			mount_ops.mount_volume(client_1, server_1, volname, mountpoint);
 		} catch (Exception e) {
 			test_res = Globals.FAILURE;
 			logger.log_failure(e);
 		}
+
+		return test_res;
 	}
 
-	public void terminate() throws Exception {
+	public int terminate() throws Exception {
 		try {
 			logger.log("Test " + test_type + "/" + component + "/" + test_name + "-" + vol_type + " terminaiting");
 
@@ -112,20 +118,19 @@ public abstract class Abstract_Test {
 			/* Unmount and delete mountpoint */
 			mount_ops.unmount_volume(client_1, volname, mountpoint);
 			io_ops.execute_io_cmd(client_1, "rm -rf " + mountpoint);
-
-			if (distributed_executioner != null) {
-				distributed_executioner.disconnect_sessions();
-			}
-
 		} catch (Exception e) {
 			test_res = Globals.FAILURE;
 			logger.log_failure(e);
 		}
 
+		if (distributed_executioner != null) {
+			distributed_executioner.disconnect_sessions();
+		}
+
 		end_time = System.currentTimeMillis();
 
 		if (test_res == Globals.SUCCESS) {
-			long execution_time = get_execution_time();
+			execution_time = get_execution_time();
 
 			logger.log_only("*** " + "Test " + test_type + "/" + component + "/" + test_name + "-" + vol_type
 					+ " Passed ***, executed in " + execution_time / 1000 + "." + execution_time % 1000 + " seconds");
@@ -133,6 +138,8 @@ public abstract class Abstract_Test {
 			logger.log_only(
 					"*** " + "Test " + test_type + "/" + component + "/" + test_name + "-" + vol_type + " Failed ***");
 		}
+
+		return test_res;
 	}
 
 	public long get_execution_time() {
