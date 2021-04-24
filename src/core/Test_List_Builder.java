@@ -19,10 +19,12 @@ public abstract class Test_List_Builder {
 	private static final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
 	public static LinkedList<Test_Wrapper> create_test_list(String test_dir_path) throws Exception {
+		/* Add the path of of the tests as provided by the user */
 		LinkedList<String> dirs_to_scan = new LinkedList<String>();
 		dirs_to_scan.add(test_dir_path);
 
-		File classes_dir = new File(Globals.BIN_PATH);
+		/* Create tests bin dir */
+		File classes_dir = new File(Params_Handler.read_value("bin_path"));
 
 		LinkedList<Test_Wrapper> tests_to_run = new LinkedList<Test_Wrapper>();
 
@@ -77,7 +79,7 @@ public abstract class Test_List_Builder {
 	private static void compile_test(String test_path) throws Exception {
 		OutputStream os = new ByteArrayOutputStream();
 
-		int res = compiler.run(null, null, os, "-d", Globals.BIN_PATH, test_path);
+		int res = compiler.run(null, null, os, "-d", Params_Handler.read_value("bin_path"), test_path);
 
 		if (res != Globals.SUCCESS) {
 			throw new Framework_Exception("Compilation of test " + test_path + " failed:\n" + os);

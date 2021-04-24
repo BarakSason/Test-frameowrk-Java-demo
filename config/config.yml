@@ -1,5 +1,6 @@
 tests_path: /root/eclipse-workspace-java/Test_Framework/src/tests
 logs_path: /root/eclipse-workspace-java/Test_Framework/logs
+bin_path: /root/eclipse-workspace-java/Test_Framework/bin/tests
 
 # 'servers_info' is info about each server in the cluster.
 # the brick_root is a list where multiple mount points can be added.

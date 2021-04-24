@@ -6,8 +6,8 @@ import test.Test_Wrapper;
 import test.Test_Wrapper.Test_Res;
 
 public abstract class Results_Handler {
-	static String format_str = String.format("|%-10s|%-3s%-10s%-3s|%-20s|%s", "Volume", "", "Result", "",
-			"Execution Time", "\n");
+	// TODO: make output length dynamic based on vol name
+	private static String format_str = String.format("|%-14s|%-10s|%-20s|%s", "Volume", "Result", "Execution Time", "\n");
 
 	public static void display_results(Logger logger) throws Exception {
 		logger.new_line();
@@ -20,14 +20,15 @@ public abstract class Results_Handler {
 			results_string.append(format_str);
 
 			for (Test_Res test_res : test_wrapper.res_list) {
-				results_string.append(String.format("|%-10s|%-3s", test_res.vol_type, ""));
+				results_string.append(String.format("|%-14s|", test_res.vol_type));
 				if (test_res.res == Globals.SUCCESS) {
-					results_string.append(String.format("%-10s%-3s", "PASS", ""));
+					results_string.append(String.format("%-10s", "PASS"));
 					results_string.append(String.format("|%-20s|%-3s%s",
 							test_res.execution_time / 1000 + "." + test_res.execution_time % 1000 + " seconds", "",
 							"\n"));
 				} else {
-					results_string.append(String.format("%-10s%-3s", "FAIL"));
+					results_string.append(String.format("%-10s", "FAIL"));
+					results_string.append(String.format("|%-20s|%-3s%s", "N/A", "", "\n"));
 				}
 			}
 			logger.log_and_print_no_timestamp(results_string.toString());

@@ -29,10 +29,12 @@ public class Remote_Executioner {
 		Channel channel = null;
 
 		try {
+			/* Create a channel for command execution */
 			channel = session.openChannel("exec");
 
 			((ChannelExec) channel).setCommand(cmd);
 
+			/* Create streams to read standard output and errors */
 			InputStream in = channel.getInputStream();
 			InputStream err = channel.getExtInputStream();
 
@@ -42,6 +44,7 @@ public class Remote_Executioner {
 			if (channel.getExitStatus() == 0) {
 				logger.log_success(cmd, host);
 			} else {
+				/* Create an error message which will be thrown by the "abstract_ops" class */
 				String err_msg = cmd_callback(channel, err);
 				op_res.res = Globals.FAILURE;
 				op_res.msg = logger.construct_failure_string(cmd, host, err_msg);
@@ -56,6 +59,7 @@ public class Remote_Executioner {
 		return op_res;
 	}
 
+	/* Read info returned by remote machine */
 	private String cmd_callback(Channel channel, InputStream stream) throws Exception {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 		StringBuilder sb = new StringBuilder();

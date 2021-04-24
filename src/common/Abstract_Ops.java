@@ -2,9 +2,10 @@ package common;
 
 import core.parsing.XML_Parser;
 import ssh.Remote_Executioner.Op_Res;
-import common.distributed_executioner.Distributed_Executioner;
 
 public abstract class Abstract_Ops {
+	/* This class provides a generic interface to execute commands */
+
 	private Logger logger;
 	protected Distributed_Executioner distributed_executioner;
 

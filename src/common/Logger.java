@@ -49,23 +49,23 @@ public class Logger {
 		writer.flush();
 	}
 
-	public void log_failure(Exception e) throws Exception {
+	public void handle_failure(Exception e) throws Exception {
 		if (e instanceof Framework_Exception) {
-			if (is_prints_enabled) {
-				System.out.print(generate_log_msg_prefix("E") + ((Framework_Exception) e).err_msg);
-			}
+			System.out.print(generate_log_msg_prefix("E") + ((Framework_Exception) e).err_msg);
 			writer.write(generate_log_msg_prefix("E") + ((Framework_Exception) e).err_msg);
 			writer.flush();
-			StackTraceElement[] ste = e.getStackTrace();
-			for (int i = 0; i < ste.length; ++i) {
-				if (is_prints_enabled) {
-					System.out.println(ste[i].toString());
-				}
-				writer.write(ste[i].toString() + "\n");
-				writer.flush();
-			}
 		} else {
 			e.printStackTrace();
+			System.out.print(generate_log_msg_prefix("E") + e.getMessage());
+			writer.write(generate_log_msg_prefix("E") + e.getMessage());
+			writer.flush();
+		}
+
+		StackTraceElement[] ste = e.getStackTrace();
+		for (int i = 0; i < ste.length; ++i) {
+			System.out.println(ste[i].toString());
+			writer.write(ste[i].toString() + "\n");
+			writer.flush();
 		}
 	}
 

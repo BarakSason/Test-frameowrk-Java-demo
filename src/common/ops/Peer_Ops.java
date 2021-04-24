@@ -1,8 +1,8 @@
 package common.ops;
 
 import common.Abstract_Ops;
+import common.Distributed_Executioner;
 import common.Logger;
-import common.distributed_executioner.Distributed_Executioner;
 
 public class Peer_Ops extends Abstract_Ops {
 	public Peer_Ops(Logger logger, Distributed_Executioner distributed_executioner) {
@@ -17,6 +17,12 @@ public class Peer_Ops extends Abstract_Ops {
 
 	public void peer_detach(String host, String peer) throws Exception {
 		String cmd = "gluster peer detach " + peer + " --mode=script";
+
+		execute_abstract_server_op(cmd, host);
+	}
+
+	public void peer_status(String host) throws Exception {
+		String cmd = "gluster peer status --mode=script";
 
 		execute_abstract_server_op(cmd, host);
 	}

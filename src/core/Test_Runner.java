@@ -19,6 +19,7 @@ public abstract class Test_Runner {
 	public static void run_tests(Logger logger) throws Exception {
 
 		if (is_parallel) {
+			/* Create a threadpool */
 			ExecutorService threadpool = Executors.newFixedThreadPool(50); // TODO: Parse threads number from the config
 																			// file
 
@@ -34,6 +35,7 @@ public abstract class Test_Runner {
 				String vol_types_str = (String) fields_map.get(VOL_TYPES_STR).get(test_instance_obj);
 				String[] vol_types = vol_types_str.split(";");
 
+				/* Execute tests in parallel */
 				for (String vol_type : vol_types) {
 					Object test_instance = instantiate_test(test_wrapper.test_class);
 
@@ -56,11 +58,13 @@ public abstract class Test_Runner {
 				String vol_types_str = (String) fields_map.get(VOL_TYPES_STR).get(test_instance_obj);
 				String[] vol_types = vol_types_str.split(";");
 
+				/* Execute tests sequentially */
 				for (String vol_type : vol_types) {
 					Object test_instance = instantiate_test(test_wrapper.test_class);
 
 					Thread t = new Thread(new Test_Task(logger, test_wrapper, methods_map, test_instance, vol_type));
 					t.start();
+					
 					try {
 						t.join();
 					} catch (InterruptedException e) {

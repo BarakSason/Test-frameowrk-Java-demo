@@ -3,14 +3,14 @@ package core;
 import java.io.File;
 import java.util.LinkedList;
 
+import common.Distributed_Executioner;
 import common.Globals;
 import common.Logger;
-import common.distributed_executioner.Distributed_Executioner;
 import common.ops.*;
 import ssh.Connection_Manager;
 
 public class Test_Main {
-	static Logger logger;
+	private static Logger logger;
 
 	public static void main(String args[]) throws Exception {
 		long start_time = System.currentTimeMillis();
@@ -18,15 +18,17 @@ public class Test_Main {
 		Distributed_Executioner distributed_executioner = null;
 
 		try {
+			/* Parsing */
 			Params_Handler.parseConfigFile(args[0]); // args[0] - Path of config file
+
+			/* Instantiate a logger for the framework */
 			logger = new Logger();
-			String test_dir_path = Params_Handler.read_value("tests_path");
 
 			/* Initiating SSH library */
 			Connection_Manager.init();
 
 			/* Selecting tests to run */
-			Test_Runner.tests_to_run = Test_List_Builder.create_test_list(test_dir_path);
+			Test_Runner.tests_to_run = Test_List_Builder.create_test_list(Params_Handler.read_value("tests_path"));
 
 			/* Instantiate Ops libs required by framework for cluster creation */
 			distributed_executioner = new Distributed_Executioner(logger);
@@ -43,9 +45,10 @@ public class Test_Main {
 			/* Destroying cluster */
 			destroy_cluster(distributed_executioner, gluster_ops, peer_ops, framework_server);
 
+			/* Display and log results */
 			Results_Handler.display_results(logger);
 		} catch (Exception e) {
-			logger.log_failure(e);
+			logger.handle_failure(e);
 		}
 
 		/* Disconnecting sessions */
@@ -61,8 +64,7 @@ public class Test_Main {
 
 		logger.log_and_print(
 				"*** Framework executed in " + execution_time / 1000 + "." + execution_time % 1000 + " seconds ***");
-		
-		
+
 	}
 
 	private static void create_cluster(Distributed_Executioner distributed_executioner, Gluster_Ops gluster_ops,
@@ -73,6 +75,10 @@ public class Test_Main {
 			gluster_ops.glusterd_start(server);
 			peer_ops.peer_probe(framework_server, server);
 		}
+
+		peer_ops.peer_status(framework_server);
+
+		// TODO: Ensure cluster is operational before continuing to avoid race cases
 	}
 
 	private static void destroy_cluster(Distributed_Executioner distributed_executioner, Gluster_Ops gluster_ops,
@@ -88,7 +94,7 @@ public class Test_Main {
 		// TODO: Parse path from config file
 
 		LinkedList<String> dirs_to_scan = new LinkedList<String>();
-		dirs_to_scan.add(Globals.BIN_PATH);
+		dirs_to_scan.add(Params_Handler.read_value("bin_path"));
 
 		while (!dirs_to_scan.isEmpty()) {
 			try {
@@ -105,7 +111,7 @@ public class Test_Main {
 					}
 				}
 			} catch (Exception e) {
-				logger.log_failure(e);
+				logger.handle_failure(e);
 			}
 		}
 	}

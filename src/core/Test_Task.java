@@ -34,6 +34,9 @@ public class Test_Task implements Runnable {
 		try {
 			int test_res;
 
+			logger.log_and_print("*** Executing test " + test_wrapper.test_type + "/" + test_wrapper.component + "/"
+					+ test_wrapper.test_name + "-" + vol_type + " ***");
+
 			/* Invoke the test method */
 			Method init_method = methods_map.get(INIT_METHOD);
 			test_res = (int) init_method.invoke(test_instance, test_wrapper.test_type, test_wrapper.component,
@@ -47,7 +50,15 @@ public class Test_Task implements Runnable {
 
 			/* Invoke the terminate method */
 			Method terminate_method = methods_map.get(TERMINATE_METHOD);
-			test_res = (int) terminate_method.invoke(test_instance);
+			int terminate_res = (int) terminate_method.invoke(test_instance);
+
+			/*
+			 * Ensure that a success for the terminate phase doesn't makr a failed test as
+			 * successful
+			 */
+			if (terminate_res == Globals.FAILURE) {
+				test_res = Globals.FAILURE;
+			}
 
 			if (test_res == Globals.SUCCESS) {
 				/* Invoke the terminate method */
@@ -67,7 +78,7 @@ public class Test_Task implements Runnable {
 			}
 		} catch (Exception e) {
 			try {
-				logger.log_failure(e);
+				logger.handle_failure(e);
 			} catch (Exception e2) {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();

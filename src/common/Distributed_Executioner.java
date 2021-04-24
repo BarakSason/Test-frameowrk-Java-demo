@@ -1,18 +1,18 @@
-package common.distributed_executioner;
+package common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.jcraft.jsch.Session;
 
-import common.Logger;
 import core.Params_Handler;
 import ssh.Connection_Manager;
 import ssh.Remote_Executioner;
 
 public class Distributed_Executioner extends Remote_Executioner {
-	Logger logger;
+	private Logger logger;
 
+	// TODO: make all fields private
 	public ArrayList<String> availble_servers;
 	public ArrayList<String> in_use_servers;
 	private HashMap<String, Session> server_sessions;

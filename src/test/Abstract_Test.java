@@ -1,8 +1,8 @@
 package test;
 
+import common.Distributed_Executioner;
 import common.Globals;
 import common.Logger;
-import common.distributed_executioner.Distributed_Executioner;
 import common.ops.*;
 
 public abstract class Abstract_Test {
@@ -13,7 +13,7 @@ public abstract class Abstract_Test {
 	 */
 	protected Logger logger;
 
-	private int test_res = Globals.SUCCESS;
+	protected int test_res = Globals.SUCCESS;
 
 	/*
 	 * General purpose Ops libs will be declared here, if a test needs additional
@@ -33,22 +33,23 @@ public abstract class Abstract_Test {
 	protected String server_1;
 	protected String client_1;
 	protected String volname;
-	protected String mount_dir;
 	protected String mountpoint;
 
-	long start_time;
-	long end_time;
-	long execution_time;
+	private long start_time;
+	private long end_time;
+	private long execution_time;
 
+	/* The abstract test method (must be implemented by all tests) */
 	protected abstract void execute_test() throws Exception;
 
+	/* Abstract test execution method to be invoked by the execution thread */
 	public int abstract_execute_test() throws Exception {
 		try {
 			logger.log_and_print("Executing test " + test_type + "/" + component + "/" + test_name + "-" + vol_type);
 			execute_test();
 		} catch (Exception e) {
 			test_res = Globals.FAILURE;
-			logger.log_failure(e);
+			logger.handle_failure(e);
 		}
 
 		return test_res;
@@ -66,6 +67,7 @@ public abstract class Abstract_Test {
 		distributed_executioner = new Distributed_Executioner(logger);
 	}
 
+	/* Init method to be invoked by the execution thread */
 	public int init(String test_type_arg, String component_arg, String test_name_arg, String vol_type_arg)
 			throws Exception {
 		start_time = System.currentTimeMillis();
@@ -76,8 +78,10 @@ public abstract class Abstract_Test {
 		this.vol_type = vol_type_arg;
 
 		try {
+			/* Perform basic initialization operations */
 			core_init();
 
+			/* Instantiate basic ops libs */
 			volume_ops = new Volume_Ops(logger, distributed_executioner);
 			mount_ops = new Mount_Ops(logger, distributed_executioner);
 			io_ops = new IO_Ops(logger, distributed_executioner);
@@ -88,28 +92,31 @@ public abstract class Abstract_Test {
 
 			/* Generate names & paths */
 			volname = test_name + "-" + vol_type;
-			mount_dir = volname + "-" + vol_type;
-			mountpoint = "/mnt/" + mount_dir; // TODO: Parse mountpoint from config file, per server
-												// (don't assume /mnt)
+			mountpoint = "/mnt/" + volname; // TODO: Parse mountpoint from config file, per server
+											// (don't assume /mnt)
 
 			/* Volume create and start */
 			volume_ops.volume_create(server_1, volname, true);
 			volume_ops.volume_start(server_1, volname);
 
-			/* Mountpoint creation and volume mount */
-			io_ops.execute_io_cmd(client_1, "cd /mnt; mkdir " + mount_dir);
+			/* Create mountpoint and mount volume */
+			io_ops.execute_io_cmd(client_1, "mkdir " + mountpoint);
 			mount_ops.mount_volume(client_1, server_1, volname, mountpoint);
 		} catch (Exception e) {
 			test_res = Globals.FAILURE;
-			logger.log_failure(e);
+			logger.handle_failure(e);
 		}
 
 		return test_res;
 	}
 
+	/* Terminate method to be invoked by the execution thread */
 	public int terminate() throws Exception {
 		try {
 			logger.log("Test " + test_type + "/" + component + "/" + test_name + "-" + vol_type + " terminaiting");
+
+			/* Delete all data created by the test */
+			io_ops.execute_io_cmd(client_1, "rm -rf " + mountpoint + "/*");
 
 			/* Volume stop, delete, mount and remove mountpoint */
 			volume_ops.volume_stop(server_1, volname);
@@ -120,9 +127,15 @@ public abstract class Abstract_Test {
 			io_ops.execute_io_cmd(client_1, "rm -rf " + mountpoint);
 		} catch (Exception e) {
 			test_res = Globals.FAILURE;
-			logger.log_failure(e);
+			logger.handle_failure(e);
+			// TODO: An additional layer of cleaning is needed - All data MUST be cleaned,
+			// even in the event of a failure.
+			// One implementation might be the framework itself iterates over all mountponts
+			// and bricks and ensures
+			// all data has been deleted
 		}
 
+		/* Disconnect all session which were opened by the test */
 		if (distributed_executioner != null) {
 			distributed_executioner.disconnect_sessions();
 		}
